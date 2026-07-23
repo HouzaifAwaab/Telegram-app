@@ -5,9 +5,10 @@ const SUPABASE_URL = "https://ssnezkzajkxkogieztxb.supabase.co";
 const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNzbmV6a3phamt4a29naWV6dHhiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ4MDY3NjgsImV4cCI6MjEwMDM4Mjc2OH0.XVxtHJDWZAfQ3DplLwPjPgUOVZwYvYfFAAM7PFxqnb8";
 const supabaseClient = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY) : null;
 
-// كلمة السر المحددة للوحة الإدارة
-const ADMIN_PASSWORD = "Zlatan!!99Yesno1000";
+// كود الآدمن الخاص بك على تليجرام
+const MY_ADMIN_TELEGRAM_ID = "7061131366";
 let isAdminLoggedIn = false;
+
 
 // ----------------------------------------------------
 // منطق توليد وتثبيت كود المستخدم الفريد (User Code)
