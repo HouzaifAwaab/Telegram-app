@@ -5,7 +5,7 @@ const SUPABASE_URL = "https://ssnezkzajkxkogieztxb.supabase.co";
 const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNzbmV6a3phamt4a29naWV6dHhiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ4MDY3NjgsImV4cCI6MjEwMDM4Mjc2OH0.XVxtHJDWZAfQ3DplLwPjPgUOVZwYvYfFAAM7PFxqnb8";
 const supabaseClient = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY) : null;
 
-// معرف المستخدم المحلي
+// معرف المستخدم المحلي أو المجلوب من تليجرام
 const userId = tg && tg.initDataUnsafe && tg.initDataUnsafe.user ? tg.initDataUnsafe.user.id.toString() : (localStorage.getItem('user_id') || 'usr_' + Math.random().toString(36).substring(2, 9));
 localStorage.setItem('user_id', userId);
 
@@ -192,6 +192,8 @@ function setupNavigation() {
         setActiveTab(btnProfile, [btnSearch, btnAdd]);
         secProfile.classList.remove('hidden');
         secSearch.classList.add('hidden'); secAdd.classList.add('hidden'); resultsContainer.classList.add('hidden');
+        
+        renderTelegramUserProfile();
         await loadMyAds();
     });
 }
@@ -346,7 +348,6 @@ async function loadAds() {
         );
     }
 
-    // ترتيب الأولوية: المميزة ثم العاجلة
     filtered.sort((a, b) => (b.is_vip ? 2 : b.is_urgent ? 1 : 0) - (a.is_vip ? 2 : a.is_urgent ? 1 : 0));
 
     if (filtered.length === 0) {
@@ -433,11 +434,11 @@ async function loadMyAds() {
     container.innerHTML = '';
     data.forEach(ad => {
         container.innerHTML += `
-            <div class="ad-card">
-                <h4>${ad.title}</h4>
-                <span class="location-badge">📍 ${ad.zone}</span>
-                <p>${ad.details}</p>
-                <button onclick="deleteAd('${ad.id}')" class="btn-danger">🗑️ حذف الإعلان</button>
+            <div class="ad-card" style="background: #242f3d; color: #fff; border-right-color: #64b5f6;">
+                <h4 style="color: #64b5f6;">${ad.title}</h4>
+                <span class="location-badge" style="background: #17212b; color: #ccc;">📍 ${ad.zone}</span>
+                <p style="color: #ddd;">${ad.details}</p>
+                <button onclick="deleteAd('${ad.id}')" class="btn-danger" style="margin-top: 8px;">🗑️ حذف الإعلان</button>
             </div>
         `;
     });
@@ -448,4 +449,43 @@ async function deleteAd(adId) {
         await supabaseClient.from('job_ads').delete().eq('id', adId);
         await loadMyAds();
     }
+}
+
+// ----------------------------------------------------
+// جلب وعرض بيانات الملف الشخصي تلقائياً من تليجرام
+// ----------------------------------------------------
+function renderTelegramUserProfile() {
+    const user = tg && tg.initDataUnsafe ? tg.initDataUnsafe.user : null;
+
+    const avatarImg = document.getElementById('user-avatar');
+    const fullNameElem = document.getElementById('profile-full-name');
+    const usernameElem = document.getElementById('profile-username');
+    const userIdElem = document.getElementById('profile-user-id');
+
+    if (user) {
+        const fullName = `${user.first_name || ''} ${user.last_name || ''}`.trim() || 'مستخدم تليجرام';
+        fullNameElem.innerText = fullName;
+        usernameElem.innerText = user.username ? `@${user.username}` : 'غير محدد';
+        userIdElem.innerText = user.id.toString();
+
+        if (user.photo_url) {
+            avatarImg.src = user.photo_url;
+        } else {
+            avatarImg.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(fullName)}&background=2b5278&color=fff`;
+        }
+    } else {
+        fullNameElem.innerText = "مستخدم زائر";
+        usernameElem.innerText = "@Guest";
+        userIdElem.innerText = userId;
+        avatarImg.src = "https://via.placeholder.com/100?text=Guest";
+    }
+}
+
+function openVerificationInfo() {
+    alert("لطلب شارة التوثيق الزرقاء 🔵، يرجى التواصل مع إدارة المنصة وتحويل الإثباتات اللازمة.");
+}
+
+function refreshProfileData() {
+    renderTelegramUserProfile();
+    loadMyAds();
 }
