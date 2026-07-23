@@ -5,6 +5,10 @@ const SUPABASE_URL = "https://ssnezkzajkxkogieztxb.supabase.co";
 const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNzbmV6a3phamt4a29naWV6dHhiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ4MDY3NjgsImV4cCI6MjEwMDM4Mjc2OH0.XVxtHJDWZAfQ3DplLwPjPgUOVZwYvYfFAAM7PFxqnb8";
 const supabaseClient = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY) : null;
 
+// كلمة السر المحددة للوحة الإدارة
+const ADMIN_PASSWORD = "Zlatan!!99Yesno1000";
+let isAdminLoggedIn = false;
+
 // ----------------------------------------------------
 // منطق توليد وتثبيت كود المستخدم الفريد (User Code)
 // ----------------------------------------------------
@@ -133,9 +137,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     await loadAds();
 });
 
-// ----------------------------------------------------
-// العرض الترويجي "جُذلاني" بالدارجي (يظهر كل 3 أيام)
-// ----------------------------------------------------
 function checkAndShowPromoBanner() {
     const lastShown = localStorage.getItem('last_promo_shown_time');
     const now = Date.now();
@@ -152,7 +153,7 @@ function closePromoBanner() {
 }
 
 // ----------------------------------------------------
-// التنقل بين الأقسام
+// التنقل بين الأقسام المحدث (يشمل الإدارة)
 // ----------------------------------------------------
 function setupNavigation() {
     const btnSearch = document.getElementById('nav-search');
@@ -160,12 +161,14 @@ function setupNavigation() {
     const btnAdd = document.getElementById('nav-add');
     const btnGozlanee = document.getElementById('nav-gozlanee');
     const btnProfile = document.getElementById('nav-profile');
+    const btnAdmin = document.getElementById('nav-admin');
     
     const secSearch = document.getElementById('search-section');
     const secAdd = document.getElementById('add-section');
     const secGozlanee = document.getElementById('gozlanee-section');
     const secPortfolio = document.getElementById('portfolio-section');
     const secProfile = document.getElementById('profile-section');
+    const secAdmin = document.getElementById('admin-section');
     const resultsContainer = document.getElementById('results');
 
     function hideAllSections() {
@@ -174,12 +177,13 @@ function setupNavigation() {
         secGozlanee.classList.add('hidden');
         secPortfolio.classList.add('hidden');
         secProfile.classList.add('hidden');
+        secAdmin.classList.add('hidden');
         resultsContainer.classList.add('hidden');
     }
 
     btnSearch.addEventListener('click', () => {
         vipOnlyFilter = false;
-        setActiveTab(btnSearch, [btnVip, btnAdd, btnGozlanee, btnProfile]);
+        setActiveTab(btnSearch, [btnVip, btnAdd, btnGozlanee, btnProfile, btnAdmin]);
         hideAllSections();
         secSearch.classList.remove('hidden'); 
         resultsContainer.classList.remove('hidden');
@@ -188,7 +192,7 @@ function setupNavigation() {
 
     btnVip.addEventListener('click', () => {
         vipOnlyFilter = true;
-        setActiveTab(btnVip, [btnSearch, btnAdd, btnGozlanee, btnProfile]);
+        setActiveTab(btnVip, [btnSearch, btnAdd, btnGozlanee, btnProfile, btnAdmin]);
         hideAllSections();
         secSearch.classList.remove('hidden'); 
         resultsContainer.classList.remove('hidden');
@@ -196,7 +200,7 @@ function setupNavigation() {
     });
 
     btnAdd.addEventListener('click', () => {
-        setActiveTab(btnAdd, [btnSearch, btnVip, btnGozlanee, btnProfile]);
+        setActiveTab(btnAdd, [btnSearch, btnVip, btnGozlanee, btnProfile, btnAdmin]);
         hideAllSections();
         secAdd.classList.remove('hidden');
     });
@@ -206,11 +210,17 @@ function setupNavigation() {
     });
 
     btnProfile.addEventListener('click', async () => {
-        setActiveTab(btnProfile, [btnSearch, btnVip, btnAdd, btnGozlanee]);
+        setActiveTab(btnProfile, [btnSearch, btnVip, btnAdd, btnGozlanee, btnAdmin]);
         hideAllSections();
         secProfile.classList.remove('hidden');
         renderTelegramUserProfile();
         await loadMyAds();
+    });
+
+    btnAdmin.addEventListener('click', () => {
+        setActiveTab(btnAdmin, [btnSearch, btnVip, btnAdd, btnGozlanee, btnProfile]);
+        hideAllSections();
+        secAdmin.classList.remove('hidden');
     });
 }
 
@@ -223,6 +233,7 @@ function switchToGozlaneeSection() {
     document.getElementById('add-section').classList.add('hidden');
     document.getElementById('portfolio-section').classList.add('hidden');
     document.getElementById('profile-section').classList.add('hidden');
+    document.getElementById('admin-section').classList.add('hidden');
     document.getElementById('results').classList.add('hidden');
     
     document.getElementById('gozlanee-section').classList.remove('hidden');
@@ -238,6 +249,148 @@ function switchToPortfolioSection() {
 function setActiveTab(active, inactives) {
     active.classList.add('active');
     inactives.forEach(i => i.classList.remove('active'));
+}
+
+// ----------------------------------------------------
+// منطق لوحة الإدارة (Admin Logic)
+// ----------------------------------------------------
+function verifyAdminPassword() {
+    const passInput = document.getElementById('admin-pass-input').value;
+
+    if (passInput === ADMIN_PASSWORD) {
+        isAdminLoggedIn = true;
+        document.getElementById('admin-login-view').classList.add('hidden');
+        document.getElementById('admin-dashboard-view').classList.remove('hidden');
+        alert("أهلاً بك يا حذيفة، تم تسجيل الدخول بنجاح!");
+        adminLoadAllAds();
+    } else {
+        alert("كلمة السر غير صحيحة! لا يمكنك دخول لوحة الإدارة.");
+    }
+}
+
+async function adminManageWallet(action) {
+    if (!isAdminLoggedIn) {
+        alert("عفواً، يتطلب تسجيل الدخول كـ أدمن أولاً!");
+        return;
+    }
+
+    const targetCode = document.getElementById('admin-target-user-code').value.trim();
+    const amount = parseFloat(document.getElementById('admin-wallet-amount').value);
+    const note = document.getElementById('admin-wallet-note').value.trim();
+
+    if (!targetCode || isNaN(amount) || amount <= 0) {
+        alert("يرجى التأكد من إدخال كود المستخدم والمبلغ بشكل صحيح!");
+        return;
+    }
+
+    // إذا كان كود المستهدف هو نفس المستخدم الحالي (حساب الأدمن) يتم تحديث المحفظة المحلية
+    if (targetCode === userCode) {
+        let avail = parseFloat(localStorage.getItem('gz_bal_available') || '0.00');
+        let frozen = parseFloat(localStorage.getItem('gz_bal_frozen') || '0.00');
+
+        if (action === 'add') {
+            avail += amount;
+            addGozlaneeStatement('topup', amount, `تغذية إدارية (${note || 'شحن'})`, 'ADMIN');
+        } else if (action === 'freeze') {
+            if (avail < amount) { alert("الرصيد المتاح غير كافٍ للتجميد!"); return; }
+            avail -= amount;
+            frozen += amount;
+            addGozlaneeStatement('frozen', amount, `تجميد إداري (${note || 'تجميد'})`, 'ADMIN');
+        } else if (action === 'unfreeze') {
+            if (frozen < amount) { alert("المبلغ المجمد أقل من المطلوب فكه!"); return; }
+            frozen -= amount;
+            avail += amount;
+            addGozlaneeStatement('topup', amount, `فك تجميد إداري (${note || 'فك تجميد'})`, 'ADMIN');
+        } else if (action === 'deduct') {
+            if (avail < amount) { alert("الرصيد المتاح أقل من المبلغ المراد خصمه!"); return; }
+            avail -= amount;
+            addGozlaneeStatement('trans', amount, `خصم إداري (${note || 'خصم'})`, 'ADMIN');
+        }
+
+        localStorage.setItem('gz_bal_available', avail.toString());
+        localStorage.setItem('gz_bal_frozen', frozen.toString());
+        updateGozlaneeUI();
+    }
+
+    // حفظ / تحديث بيانات المحفظة في Supabase جدول user_wallets (إن وجد)
+    try {
+        const { data: currentWallet } = await supabaseClient
+            .from('user_wallets')
+            .select('*')
+            .eq('user_code', targetCode)
+            .maybeSingle();
+
+        let currentAvail = currentWallet ? (currentWallet.available_balance || 0) : 0;
+        let currentFrozen = currentWallet ? (currentWallet.frozen_balance || 0) : 0;
+
+        if (action === 'add') currentAvail += amount;
+        else if (action === 'freeze') { currentAvail -= amount; currentFrozen += amount; }
+        else if (action === 'unfreeze') { currentFrozen -= amount; currentAvail += amount; }
+        else if (action === 'deduct') currentAvail -= amount;
+
+        await supabaseClient.from('user_wallets').upsert({
+            user_code: targetCode,
+            available_balance: currentAvail,
+            frozen_balance: currentFrozen,
+            updated_at: new Date()
+        }, { onConflict: 'user_code' });
+
+    } catch (e) {
+        console.log("Supabase wallet table sync note:", e);
+    }
+
+    let actionText = action === 'add' ? 'تغذية' : action === 'freeze' ? 'تجميد' : action === 'unfreeze' ? 'فك تجميد' : 'خصم';
+    alert(`تم تنفيذ عملية (${actionText}) بمبلغ ${amount} ج.س للمستخدم [${targetCode}] بنجاح!`);
+
+    document.getElementById('admin-wallet-amount').value = '';
+    document.getElementById('admin-wallet-note').value = '';
+}
+
+async function adminLoadAllAds() {
+    const container = document.getElementById('admin-ads-list');
+    container.innerHTML = '<p class="placeholder-text">جاري جلب جميع إعلانات النظام...</p>';
+
+    const { data, error } = await supabaseClient.from('job_ads').select('*').order('created_at', { ascending: false });
+
+    if (error || !data || data.length === 0) {
+        container.innerHTML = '<p class="placeholder-text">لا توجد إعلانات بالنظام حالياً.</p>';
+        return;
+    }
+
+    container.innerHTML = '';
+    data.forEach(ad => {
+        container.innerHTML += `
+            <div class="admin-ad-item">
+                <div class="admin-ad-info">
+                    <strong>${ad.title}</strong>
+                    <span>الناشر: ${ad.publisher_name || 'زائر'} | الكود: ${ad.user_code || 'بدون'}</span>
+                    <small>المنطقة: ${ad.zone} | كود الإعلان: #${ad.ad_code || '---'}</small>
+                </div>
+                <div class="admin-ad-btns">
+                    <button onclick="adminToggleVip('${ad.id}', ${!ad.is_vip})" class="btn-admin-action ${ad.is_vip ? 'btn-warn' : 'btn-vip'}">
+                        ${ad.is_vip ? 'إلغاء VIP' : 'ترقية VIP'}
+                    </button>
+                    <button onclick="adminDeleteAd('${ad.id}')" class="btn-danger">🗑️ حذف</button>
+                </div>
+            </div>
+        `;
+    });
+}
+
+async function adminToggleVip(adId, newVipStatus) {
+    await supabaseClient.from('job_ads').update({ is_vip: newVipStatus }).eq('id', adId);
+    alert(newVipStatus ? "تمت ترقية الإعلان إلى VIP بنجاح!" : "تم إلغاء تثبيت VIP من الإعلان.");
+    await adminLoadAllAds();
+    await loadAds();
+}
+
+async function adminDeleteAd(adId) {
+    if (confirm("هل أنت متأكد كـ إداري من حذف هذا الإعلان نهائياً؟")) {
+        await supabaseClient.from('job_ads').delete().eq('id', adId);
+        alert("تم حذف الإعلان بواسطة الإدارة.");
+        await adminLoadAllAds();
+        await loadAds();
+    }
 }
 
 // ----------------------------------------------------
@@ -400,7 +553,7 @@ function setupPromos() {
 }
 
 // ----------------------------------------------------
-// تحميل الإعلانات المطور مع دعومات جُذلاني والأولوية
+// تحميل الإعلانات
 // ----------------------------------------------------
 async function loadAds() {
     const resultsContainer = document.getElementById('results');
@@ -447,7 +600,6 @@ async function loadAds() {
         );
     }
 
-    // ترتيب الأولوية: VIP أولاً، ثم قبول جُذلاني، ثم العاجل
     filtered.sort((a, b) => {
         const scoreA = (a.is_vip ? 100 : 0) + (a.accepts_gozlanee ? 50 : 0) + (a.is_urgent ? 20 : 0);
         const scoreB = (b.is_vip ? 100 : 0) + (b.accepts_gozlanee ? 50 : 0) + (b.is_urgent ? 20 : 0);
@@ -493,7 +645,7 @@ async function loadAds() {
 }
 
 // ----------------------------------------------------
-// نشر وحفظ إعلان مع خاصية "مقبول عبر جُذلاني"
+// حفظ وإرسال الإعلان
 // ----------------------------------------------------
 async function saveAd() {
     const title = document.getElementById('tech-title').value;
@@ -548,7 +700,7 @@ async function saveAd() {
 }
 
 // ----------------------------------------------------
-// نظام إدارة محفظة "جُذلاني" (Gozlanee Smart Escrow)
+// نظام إدارة محفظة "جُذلاني"
 // ----------------------------------------------------
 function updateGozlaneeUI() {
     const available = parseFloat(localStorage.getItem('gz_bal_available') || '0.00');
@@ -657,7 +809,6 @@ function processEscrowFreeze() {
 
     alert(`تم تجميد مبلغ (${amount} جنيه) بنجاح وإمهال الفني 60 دقيقة للموافقة وتنفيذ الخدمة!`);
 
-    // إعداد مؤقت 60 دقيقة لإلغاء التجميد تلقائياً إذا لم يُنفذ
     setTimeout(() => {
         let currentFrozen = parseFloat(localStorage.getItem('gz_bal_frozen') || '0.00');
         if (currentFrozen >= amount) {
@@ -694,7 +845,7 @@ function processDirectTransfer() {
 }
 
 // ----------------------------------------------------
-// سابقة ومعرض الأعمال (Portfolio Before/After)
+// معرض الأعمال
 // ----------------------------------------------------
 function loadPortfolio() {
     const grid = document.getElementById('portfolio-grid');
@@ -745,7 +896,7 @@ function addPortfolioItem() {
 }
 
 // ----------------------------------------------------
-// عرض بيانات الملف الشخصي والمنصات الاجتماعية الثلاث
+// بيانات الملف الشخصي
 // ----------------------------------------------------
 function renderTelegramUserProfile() {
     const avatarImg = document.getElementById('user-avatar');
