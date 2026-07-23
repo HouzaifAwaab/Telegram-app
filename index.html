@@ -24,9 +24,10 @@
             <button id="nav-add" class="nav-btn">➕ إضافة إعلان</button>
             <button id="nav-gozlanee" class="nav-btn gozlanee-nav-btn">💳 جُذلاني</button>
             <button id="nav-profile" class="nav-btn">👤 ملفي</button>
+            <button id="nav-admin" class="nav-btn admin-nav-btn">⚙️ الإدارة</button>
         </div>
 
-        <!-- الإشعار الترويجي لـ "جُذلاني" بالدارجي السوداني (يظهر تلقائياً كل 3 أيام) -->
+        <!-- الإشعار الترويجي لـ "جُذلاني" -->
         <div id="gozlanee-promo-banner" class="promo-banner-card hidden">
             <div class="promo-banner-header">
                 <span>💡 قروشك في أمان.. وشغلك بيتم تمام! 🤝✨</span>
@@ -171,7 +172,6 @@
                 <textarea id="tech-details" placeholder="اكتب باقي التفاصيل والاشتراطات هنا..."></textarea>
             </div>
 
-            <!-- خيار قبول الدفع عبر جُذلاني يمنح أولوية الظهور -->
             <div class="promo-box gozlanee-accept-box">
                 <label class="checkbox-label">
                     <input type="checkbox" id="accept-gozlanee-check" checked>
@@ -209,14 +209,13 @@
             <button id="save-ad-btn" class="btn btn-success">✨ نشر الإعلان الآن</button>
         </div>
 
-        <!-- 3. قسم نظام محفظة "جُذلاني" الذكية (Smart Escrow Wallet) -->
+        <!-- 3. قسم نظام محفظة "جُذلاني" الذكية -->
         <div id="gozlanee-section" class="card-box hidden profile-telegram-theme">
             <div class="gozlanee-header">
                 <h3>💳 محفظة جُذلاني (الضامن المالي)</h3>
                 <p>نظام الدفع الآمن والمحمي بين الزبون والفني</p>
             </div>
 
-            <!-- بطاقة كشف الرصيد -->
             <div class="gozlanee-balance-card">
                 <div class="bal-box">
                     <span class="bal-label">🟢 الرصيد المتاح</span>
@@ -229,14 +228,12 @@
                 </div>
             </div>
 
-            <!-- أزرار الإجراءات في جُذلاني -->
             <div class="gozlanee-actions">
                 <button onclick="toggleGozlaneeSubTab('topup')" class="gz-btn btn-topup">📥 تغذية جُذلاني عبر بنكك</button>
                 <button onclick="toggleGozlaneeSubTab('pay')" class="gz-btn btn-escrow">🤝 دفع لخدمة (تجميد 60د)</button>
                 <button onclick="toggleGozlaneeSubTab('transfer')" class="gz-btn btn-gift">🎁 تحويل مباشر / إهداء</button>
             </div>
 
-            <!-- نموذج 1: تغذية الحساب عبر بنكك -->
             <div id="gz-topup-form" class="gz-sub-card hidden">
                 <h4>📥 تغذية المحفظة عبر تطبيق بنكك</h4>
                 <div class="bankak-guide">
@@ -254,7 +251,6 @@
                 <button onclick="submitBankakDeposit()" class="btn btn-success">✅ تأكيد التغذية وإرسال الإشعار للإدارة</button>
             </div>
 
-            <!-- نموذج 2: التجميد والدفع الآمن للخدمة -->
             <div id="gz-pay-form" class="gz-sub-card hidden">
                 <h4>🤝 تجميد مبلغ لخدمة فني (مهلة 60 دقيقة للموافقة)</h4>
                 <p class="gz-notice">عند إرسال الطلب يتم تجميد المبلغ، ويُمنح الفني 60 دقيقة للموافقة. إذا انتهت المهلة أو رفض، ينفك التجميد تلقائياً ليمتد رصيدك.</p>
@@ -273,7 +269,6 @@
                 <button onclick="processEscrowFreeze()" class="btn">🔒 تجميد المبلغ وإرسال الطلب للفني</button>
             </div>
 
-            <!-- نموذج 3: تحويل مباشر / إهداء -->
             <div id="gz-transfer-form" class="gz-sub-card hidden">
                 <h4>🎁 تحويل مباشر لرصيد جُذلاني صديق</h4>
                 <div class="form-group">
@@ -287,7 +282,6 @@
                 <button onclick="processDirectTransfer()" class="btn btn-success">💸 تحويل الرصيد فوراً</button>
             </div>
 
-            <!-- كشف حساب جُذلاني (Mini Statement) -->
             <div class="gz-statement-section">
                 <h4>📋 كشف حساب جُذلاني (سجل العمليات)</h4>
                 <div id="gz-statement-list" class="statement-list">
@@ -336,7 +330,6 @@
                 <p id="profile-online-status" class="status-online">متصل الآن</p>
             </div>
 
-            <!-- أزرار الإجراءات الجديدة المفصلة -->
             <div class="profile-actions-grid">
                 <button class="tg-action-btn" onclick="switchToPortfolioSection()">
                     <i class="icon">🖼️</i>
@@ -352,7 +345,6 @@
                 </button>
             </div>
 
-            <!-- كارت البيانات الشخصية المحدث (معرفات التواصل الاجتماعي الـ 3 بدلاً من ID) -->
             <div class="tg-info-card">
                 <div class="tg-info-row">
                     <span class="tg-info-val highlight-code" id="profile-user-code">------</span>
@@ -361,7 +353,6 @@
                 
                 <div class="tg-divider"></div>
 
-                <!-- الخانات الثلاث للتواصل الاجتماعي -->
                 <div class="tg-info-row social-edit-row">
                     <span class="tg-info-lbl">📱 رقم الواتساب (WhatsApp):</span>
                     <input type="text" id="profile-whatsapp" class="profile-social-input" placeholder="09xxxxxxx" onchange="saveSocialLinks()">
@@ -388,6 +379,67 @@
 
             <div id="my-ads-list" class="results-container">
                 <p class="placeholder-text">جاري تحميل إعلاناتك...</p>
+            </div>
+        </div>
+
+        <!-- 6. قسم لوحة الإدارة (Admin Panel) -->
+        <div id="admin-section" class="card-box hidden profile-telegram-theme admin-theme">
+            <div id="admin-login-view" class="admin-login-box">
+                <div class="admin-header">
+                    <h3>🔐 دخول صفحة الإدارة</h3>
+                    <p>خاص بإدارة البوت والمنصة (@HUZAIFA1999)</p>
+                </div>
+                <div class="form-group">
+                    <label>أدخل كلمة سر الإدارة:</label>
+                    <input type="password" id="admin-pass-input" placeholder="أدخل كلمة السر هنا...">
+                </div>
+                <button onclick="verifyAdminPassword()" class="btn btn-admin">🔓 تسجيل الدخول للإدارة</button>
+            </div>
+
+            <div id="admin-dashboard-view" class="hidden">
+                <div class="admin-header">
+                    <h3>🛡️ لوحة التحكم والإدارة المباشرة</h3>
+                    <p>مرحباً بك يا حذيفة (المدير العام)</p>
+                </div>
+
+                <!-- 1. تغذية وتجميد المحافظ -->
+                <div class="admin-card">
+                    <h4>💳 إدارة محفظة المستخدمين (جُذلاني)</h4>
+                    <p class="admin-subtext">أدخل كود المستخدم للتحكم المباشر في رصيده:</p>
+                    
+                    <div class="form-group">
+                        <label>كود المستخدم المستهدف (User Code):</label>
+                        <input type="text" id="admin-target-user-code" placeholder="مثال: TG7406 أو GS1002">
+                    </div>
+
+                    <div class="form-group">
+                        <label>المبلغ (بالجنيه السوداني):</label>
+                        <input type="number" id="admin-wallet-amount" placeholder="مثال: 50000">
+                    </div>
+
+                    <div class="form-group">
+                        <label>ملاحظات/سبب العملية (اختياري):</label>
+                        <input type="text" id="admin-wallet-note" placeholder="مثال: تغذية عن طريق الإشعار / بنكك">
+                    </div>
+
+                    <div class="admin-btn-grid">
+                        <button onclick="adminManageWallet('add')" class="btn btn-success">➕ تغذية رصيد</button>
+                        <button onclick="adminManageWallet('freeze')" class="btn btn-warning">🔒 تجميد مبلغ</button>
+                        <button onclick="adminManageWallet('unfreeze')" class="btn btn-info">🔓 فك تجميد</button>
+                        <button onclick="adminManageWallet('deduct')" class="btn btn-danger">➖ خصم رصيد</button>
+                    </div>
+                </div>
+
+                <!-- 2. مراقبة وإدارة الإعلانات -->
+                <div class="admin-card">
+                    <div class="admin-card-header">
+                        <h4>📢 مراقبة جميع الإعلانات بالنظام</h4>
+                        <button onclick="adminLoadAllAds()" class="btn-sm-refresh">🔄 تحديث</button>
+                    </div>
+                    <div id="admin-ads-list" class="admin-ads-container">
+                        <p class="placeholder-text">اضغط تحديث لعرض الإعلانات المتاحة...</p>
+                    </div>
+                </div>
             </div>
         </div>
 
