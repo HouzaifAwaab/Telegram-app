@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <title>تنزيل ملفات المشروع</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+</head>
+<body style="font-family: sans-serif; text-align: center; padding-top: 50px;">
+    <h2>جاري تجهيز ملفات دليل خدماتك...</h2>
+    <button id="download-btn" style="padding: 15px 25px; font-size: 18px; background: #0088cc; color: white; border: none; border-radius: 8px; cursor: pointer;">
+        ⬇️ اضغط هنا لتنزيل كود المشروع جاهز (.zip)
+    </button>
+
+    <script>
+        document.getElementById('download-btn').addEventListener('click', function () {
+            const zip = new JSZip();
+
+            // 1. ملف index.html
+            const htmlContent = `<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>دليل خدماتك - بورتسودان</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"><\/script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"><\/script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <h2>🛠️ دليل خدمات بورتسودان</h2>
+        <p>اختر الخدمة والحي للوصول لأقرب فني</p>
+    </header>
+
+    <main class="container">
+        <div class="form-group">
+            <label for="job-select">اختر المهنة أو الخدمة:</label>
+            <select id="job-select">
+                <option value="">جاري تحميل المهن...</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="neighborhood-select">اختر الحي:</label>
+            <select id="neighborhood-select">
+                <option value="">جاري تحميل الأحياء...</option>
+            </select>
+        </div>
+
+        <button id="search-btn" class="btn">بحث عن فنيين</button>
+
+        <div id="results" class="results-container"></div>
+    </main>
+
+    <script src="app.js"><\/script>
+</body>
+</html>`;
+
+            // 2. ملف style.css
+            const cssContent = `* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: system-ui, -apple-system, sans-serif;
+}
+
+body {
+    background-color: #f4f6f9;
+    color: #333;
+    padding: 15px;
+    direction: rtl;
+}
+
+header {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+header h2 {
+    color: #0088cc;
+    font-size: 20px;
+}
+
+header p {
+    color: #666;
+    font-size: 13px;
+    margin-top: 5px;
+}
+
+.container {
+    background: #ffffff;
+    padding: 15px;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+label {
+    display: block;
+    font-size: 14px;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 14px;
+    outline: none;
+}
+
+.btn {
+    width: 100%;
+    background-color: #0088cc;
+    color: white;
+    border: none;
+    padding: 12px;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.btn:active {
+    background-color: #006699;
+}
+
+.results-container {
+    margin-top: 20px;
+}`;
+
+            // 3. ملف app.js
+            const jsContent = `const tg = window.Telegram ? window.Telegram.WebApp : null;
+if (tg) tg.expand();
+
+// استبدل هذه البيانات ببيانات مشروتك في Supabase
+const SUPABASE_URL = "https://your-project-id.supabase.co";
+const SUPABASE_KEY = "your-anon-key";
+const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+document.addEventListener("DOMContentLoaded", async () => {
+    await loadJobs();
+    await loadNeighborhoods();
+});
+
+async function loadJobs() {
+    const { data, error } = await supabase.from('jobs').select('*');
+    const select = document.getElementById('job-select');
+    if (error) {
+        select.innerHTML = '<option>حدث خطأ في التحميل</option>';
+        return;
+    }
+    select.innerHTML = '<option value="">-- اختر المهنة --</option>';
+    data.forEach(job => {
+        select.innerHTML += \`<option value="\${job.id}">\${job.name_ar}</option>\`;
+    });
+}
+
+async function loadNeighborhoods() {
+    const { data, error } = await supabase.from('neighborhoods').select('*');
+    const select = document.getElementById('neighborhood-select');
+    if (error) {
+        select.innerHTML = '<option>حدث خطأ في التحميل</option>';
+        return;
+    }
+    select.innerHTML = '<option value="">-- اختر الحي --</option>';
+    data.forEach(item => {
+        select.innerHTML += \`<option value="\${item.id}">\${item.name_ar} (\${item.sector_ar})</option>\`;
+    });
+}`;
+
+            // إضافة الملفات إلى الـ ZIP
+            zip.file("index.html", htmlContent);
+            zip.file("style.css", cssContent);
+            zip.file("app.js", jsContent);
+
+            // ضغط وتنزيل الملف
+            zip.generateAsync({type:"blob"}).then(function(content) {
+                saveAs(content, "dalil-khidmatak.zip");
+            });
+        });
+    </script>
+</body>
+</html>
