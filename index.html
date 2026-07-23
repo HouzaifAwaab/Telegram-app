@@ -14,7 +14,7 @@
 
     <header>
         <h2>🛠️ دليل خدمات بورتسودان</h2>
-        <p>ربط طالبي الخدمات بمقدميها في جميع الأحياء</p>
+        <p>المنصة المباشرة لربط الخدمات والمهن بجميع الأحياء</p>
     </header>
 
     <main class="container">
@@ -22,15 +22,31 @@
         <!-- أزرار التنقل -->
         <div class="nav-buttons">
             <button id="nav-search" class="nav-btn active">🔍 البحث عن خدمة</button>
-            <button id="nav-add" class="nav-btn">➕ إضافة إعلان فني</button>
+            <button id="nav-add" class="nav-btn">➕ إضافة إعلان احترافي</button>
         </div>
 
-        <!-- 1. قسم البحث -->
+        <!-- 1. قسم البحث المتقدم -->
         <div id="search-section" class="card-box">
             <div class="form-group">
-                <label for="category-select">القطاع / المجال:</label>
+                <label for="category-select">القطاع الرئيسي:</label>
                 <select id="category-select">
                     <option value="">جاري تحميل القطاعات...</option>
+                </select>
+            </div>
+
+            <!-- قائمة فرعية 1: التخصص / الخدمة -->
+            <div class="form-group hidden" id="sub-type-group">
+                <label for="sub-type-select">التخصص / الخدمة:</label>
+                <select id="sub-type-select">
+                    <option value="">-- اختر التخصص --</option>
+                </select>
+            </div>
+
+            <!-- قائمة فرعية 2: المهارة / المركبة -->
+            <div class="form-group hidden" id="detail-group">
+                <label for="detail-select">المهارة / نوع المركبة:</label>
+                <select id="detail-select">
+                    <option value="">-- اختر التحديد --</option>
                 </select>
             </div>
 
@@ -41,36 +57,73 @@
                 </select>
             </div>
 
-            <button id="search-btn" class="btn">🔍 عرض الفنيين المتاحين</button>
+            <button id="search-btn" class="btn">🔍 عرض النتائج المخصصة</button>
         </div>
 
-        <!-- 2. قسم إضافة إعلان جديد -->
+        <!-- 2. قسم إضافة إعلان جديد مع الشرح والتصنيفات المتداخلة -->
         <div id="add-section" class="card-box hidden">
-            <h3>تسجيل إعلان فني جديد</h3>
-            <div class="form-group">
-                <label>اسم الفني / المهنة:</label>
-                <input type="text" id="tech-title" placeholder="مثال: فني كهرباء منازل">
+            
+            <!-- بطاقة إرشادات لكتابة أفضل إعلان -->
+            <div class="guide-card">
+                💡 <strong>كيف تجعل إعلانك جذاباً للعملاء؟</strong>
+                <ul>
+                    <li>اكتب اسمك وتخصصك بدقة (مثال: سائق ركشة بالتوريدة / فني مكيفات اسبليت).</li>
+                    <li>حدد حيك المفضل للعمل لتصلك الطلبات القريبة منك بسرعة.</li>
+                    <li>وضح خبرتك وشروطك بوضوح في صندوق التفاصيل.</li>
+                </ul>
             </div>
+
+            <h3>تسجيل إعلان فني جديد</h3>
+            
             <div class="form-group">
-                <label>المنطقة / الحي:</label>
+                <label>اسم الفني / عنوان الإعلان:</label>
+                <input type="text" id="tech-title" placeholder="مثال: سائق أمجاد توريدة / فني سباكة">
+            </div>
+
+            <div class="form-group">
+                <label for="add-category-select">القطاع الرئيسي:</label>
+                <select id="add-category-select">
+                    <option value="">جاري تحميل القطاعات...</option>
+                </select>
+            </div>
+
+            <div class="form-group hidden" id="add-sub-type-group">
+                <label for="add-sub-type-select">التخصص / الخدمة:</label>
+                <select id="add-sub-type-select">
+                    <option value="">-- اختر التخصص --</option>
+                </select>
+            </div>
+
+            <div class="form-group hidden" id="add-detail-group">
+                <label for="add-detail-select">المهارة / نوع المركبة:</label>
+                <select id="add-detail-select">
+                    <option value="">-- اختر التحديد --</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="add-zone-select">المنطقة / الحي:</label>
                 <select id="add-zone-select">
                     <option value="">جاري تحميل الأحياء...</option>
                 </select>
             </div>
+
             <div class="form-group">
                 <label>رقم الهاتف / الواتساب:</label>
-                <input type="tel" id="tech-phone" placeholder="0912345678">
+                <input type="tel" id="tech-phone" placeholder="09xxxxxxx">
             </div>
+
             <div class="form-group">
-                <label>تفاصيل الخدمة والخبرة:</label>
-                <textarea id="tech-details" placeholder="اكتب الخبرة والخدمات المقدمة..."></textarea>
+                <label>تفاصيل الخدمة والخبرة والشروط:</label>
+                <textarea id="tech-details" placeholder="اكتب تفاصيل خدماتك، التوريدة المطلوبة، أوقات العمل..."></textarea>
             </div>
-            <button id="save-ad-btn" class="btn btn-success">✅ نشر الإعلان فوراً</button>
+
+            <button id="save-ad-btn" class="btn btn-success">✨ نشر الإعلان فوراً</button>
         </div>
 
         <!-- عرض كروت النتائج -->
         <div id="results" class="results-container">
-            <p class="placeholder-text">جاري جلب الإعلانات المتاحة...</p>
+            <p class="placeholder-text">حدد خيارات البحث للوصول للإعلانات المطابقة.</p>
         </div>
 
     </main>
