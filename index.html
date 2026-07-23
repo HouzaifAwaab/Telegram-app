@@ -17,21 +17,34 @@
 
     <main class="container">
         
+        <!-- أزرار التنقل الرئيسية -->
         <div class="nav-buttons">
             <button id="nav-search" class="nav-btn active">🔍 البحث عن خدمة</button>
-            <button id="nav-add" class="nav-btn">➕ إضافة إعلان احترافي</button>
+            <button id="nav-add" class="nav-btn">➕ إضافة إعلان</button>
+            <button id="nav-profile" class="nav-btn">👤 ملفي الشخصي</button>
         </div>
 
         <!-- 1. قسم البحث المتقدم -->
         <div id="search-section" class="card-box">
+            
+            <div class="intent-selector">
+                <button id="filter-all" class="intent-btn active">الكل</button>
+                <button id="filter-offers" class="intent-btn">🛠️ عروض الخدمات</button>
+                <button id="filter-requests" class="intent-btn">🙋‍♂️ طلبات الخدمات</button>
+            </div>
+
+            <!-- البحث السريع النصي -->
             <div class="form-group">
-                <label for="category-select">القطاع الرئيسي:</label>
+                <input type="text" id="live-search-input" placeholder="🔍 بحث سريع بكلمة مفتاحية أو اسم فني/حي...">
+            </div>
+
+            <div class="form-group">
+                <label for="category-select">المهن:</label>
                 <select id="category-select">
-                    <option value="">جاري تحميل القطاعات...</option>
+                    <option value="">جاري تحميل المهن...</option>
                 </select>
             </div>
 
-            <!-- القوائم المتداخلة الفرعية -->
             <div class="form-group hidden" id="sub-type-group">
                 <label for="sub-type-select">التخصص / الخدمة:</label>
                 <select id="sub-type-select">
@@ -46,39 +59,53 @@
                 </select>
             </div>
 
+            <!-- الهيكلة الجغرافية -->
             <div class="form-group">
-                <label for="zone-select">المنطقة / الحي:</label>
-                <select id="zone-select">
-                    <option value="">جاري تحميل الأحياء...</option>
+                <label for="main-zone-select">القطاع / المنطقة الرئيسية:</label>
+                <select id="main-zone-select">
+                    <option value="">جاري تحميل القطاعات...</option>
                 </select>
             </div>
 
-            <button id="search-btn" class="btn">🔍 عرض النتائج المخصصة</button>
+            <div class="form-group hidden" id="sub-zone-group">
+                <label for="sub-zone-select">التقسيم الفرعي للقطاع:</label>
+                <select id="sub-zone-select">
+                    <option value="">-- اختر التقسيم --</option>
+                </select>
+            </div>
+
+            <div class="form-group hidden" id="neighborhood-group">
+                <label for="neighborhood-select">الحي:</label>
+                <select id="neighborhood-select">
+                    <option value="">-- اختر الحي --</option>
+                </select>
+            </div>
+
+            <div class="form-group hidden" id="block-num-group">
+                <label for="block-num-input">رقم المربع (اختياري):</label>
+                <input type="text" id="block-num-input" placeholder="مثال: مربع 4">
+            </div>
+
+            <button id="search-btn" class="btn">🔍 عرض النتائج</button>
         </div>
 
-        <!-- 2. قسم إضافة إعلان جديد مع الشرح -->
+        <!-- 2. قسم إضافة إعلان جديد -->
         <div id="add-section" class="card-box hidden">
             
-            <div class="guide-card">
-                💡 <strong>كيف تجعل إعلانك جذاباً للعملاء؟</strong>
-                <ul>
-                    <li>اكتب اسمك وتخصصك بدقة (مثال: سائق ركشة بالتوريدة / فني مكيفات اسبليت).</li>
-                    <li>حدد حيك المفضل للعمل لتصلك الطلبات القريبة منك بسرعة.</li>
-                    <li>وضح خبرتك وشروطك بوضوح في صندوق التفاصيل.</li>
-                </ul>
-            </div>
-
-            <h3>تسجيل إعلان فني جديد</h3>
-            
-            <div class="form-group">
-                <label>اسم الفني / عنوان الإعلان:</label>
-                <input type="text" id="tech-title" placeholder="مثال: سائق أمجاد توريدة / فني سباكة">
+            <div class="intent-selector add-intent">
+                <button id="tab-add-offer" class="intent-btn active">🛠️ تقديم خدمة (أنا فني/سائق)</button>
+                <button id="tab-add-request" class="intent-btn">🙋‍♂️ طلب خدمة (أبحث عن فني)</button>
             </div>
 
             <div class="form-group">
-                <label for="add-category-select">القطاع الرئيسي:</label>
+                <label>عنوان الإعلان / الاسم:</label>
+                <input type="text" id="tech-title" placeholder="مثال: سائق ركشة بالتوريدة / مطلوب فني مكيفات">
+            </div>
+
+            <div class="form-group">
+                <label for="add-category-select">المهن:</label>
                 <select id="add-category-select">
-                    <option value="">جاري تحميل القطاعات...</option>
+                    <option value="">جاري تحميل المهن...</option>
                 </select>
             </div>
 
@@ -96,11 +123,51 @@
                 </select>
             </div>
 
+            <!-- القطاعات الجغرافية -->
             <div class="form-group">
-                <label for="add-zone-select">المنطقة / الحي:</label>
-                <select id="add-zone-select">
-                    <option value="">جاري تحميل الأحياء...</option>
+                <label for="add-main-zone-select">القطاع الرئيسي:</label>
+                <select id="add-main-zone-select">
+                    <option value="">جاري تحميل القطاعات...</option>
                 </select>
+            </div>
+
+            <div class="form-group hidden" id="add-sub-zone-group">
+                <label for="add-sub-zone-select">التقسيم الفرعي للقطاع:</label>
+                <select id="add-sub-zone-select">
+                    <option value="">-- اختر التقسيم --</option>
+                </select>
+            </div>
+
+            <div class="form-group hidden" id="add-neighborhood-group">
+                <label for="add-neighborhood-select">الحي:</label>
+                <select id="add-neighborhood-select">
+                    <option value="">-- اختر الحي --</option>
+                </select>
+            </div>
+
+            <div class="form-group hidden" id="add-block-num-group">
+                <label for="add-block-num-input">أدخل رقم المربع (اختياري):</label>
+                <input type="text" id="add-block-num-input" placeholder="مثال: مربع 5">
+            </div>
+
+            <!-- الحقول الخاصة بمقدم الخدمة -->
+            <div id="offer-specific-fields">
+                <div class="form-group">
+                    <label>سنوات الخبرة / سابقة الأعمال:</label>
+                    <input type="text" id="offer-experience" placeholder="مثال: 5 سنوات خبرة في الصيانة">
+                </div>
+                <div class="form-group">
+                    <label>أوقات وأيام العمل المتاحة:</label>
+                    <input type="text" id="offer-work-days" placeholder="مثال: يومياً من 8 ص - 5 م">
+                </div>
+            </div>
+
+            <!-- الحقول الخاصة بطالب الخدمة -->
+            <div id="request-specific-fields" class="hidden">
+                <div class="form-group">
+                    <label>الميزانية المتوقعة (اختياري):</label>
+                    <input type="text" id="request-budget" placeholder="مثال: 10,000 جنيه أو حسب الاتفاق">
+                </div>
             </div>
 
             <div class="form-group">
@@ -109,13 +176,57 @@
             </div>
 
             <div class="form-group">
-                <label>تفاصيل الخدمة والخبرة والشروط:</label>
-                <textarea id="tech-details" placeholder="اكتب تفاصيل خدماتك، التوريدة المطلوبة، أوقات العمل..."></textarea>
+                <label>تفاصيل الخدمة والشروط:</label>
+                <textarea id="tech-details" placeholder="اكتب باقي التواصيل والاشتراطات هنا..."></textarea>
             </div>
 
-            <button id="save-ad-btn" class="btn btn-success">✨ نشر الإعلان فوراً</button>
+            <!-- خيار الإعلان العاجل (Urgent Flag) -->
+            <div class="promo-box urgent-box">
+                <label class="checkbox-label">
+                    <input type="checkbox" id="urgent-ad-check"> 
+                    🚨 <strong>تميز كـ إعلان عاجل فوراً</strong>
+                </label>
+                <p class="promo-desc">مجاناً للمرة الأولى (و بـ 1500 جنيه للمرات القادمة).</p>
+                <div id="urgent-payment-info" class="hidden inner-pay-box">
+                    <p>قم بتحويل <strong>1500 جنيه</strong> لحساب بنك الخرطوم: <code>4633063</code></p>
+                    <button type="button" class="btn-copy" onclick="copyAccountNum()">📋 نسخ رقم الحساب</button>
+                    <input type="text" id="urgent-receipt-num" placeholder="أدخل رقم عملية التحويل">
+                </div>
+            </div>
+
+            <!-- خيار الإعلان المميز المدفوع (VIP) -->
+            <div class="promo-box vip-box-wrap">
+                <label class="checkbox-label">
+                    <input type="checkbox" id="vip-ad-check"> 
+                    🌟 <strong>ترقية الإعلان للتثبيت (2000 جنيه)</strong>
+                </label>
+                <p class="promo-desc">يثبت إعلانك شهرين في أعلى النتائج وفي قنوات ومجموعات التواصل.</p>
+                
+                <div id="vip-payment-info" class="hidden inner-pay-box">
+                    <p>الحساب: <code>4633063</code> (حذيفه محمدنور محمد همد)</p>
+                    <button type="button" class="btn-copy" onclick="copyAccountNum()">📋 نسخ رقم الحساب</button>
+                    <input type="text" id="vip-receipt-num" placeholder="أدخل رقم عملية التحويل">
+                    <a id="whatsapp-receipt-btn" href="#" target="_blank" class="btn-wa">💬 إرسال الإشعار للواتساب (0907627406)</a>
+                </div>
+            </div>
+
+            <button id="save-ad-btn" class="btn btn-success">✨ نشر الإعلان الآن</button>
         </div>
 
+        <!-- 3. قسم الملف الشخصي -->
+        <div id="profile-section" class="card-box hidden">
+            <div class="profile-header">
+                <h3>👤 الملف الشخصي</h3>
+                <a href="https://t.me/HUZAIFA1999" target="_blank" class="verify-badge-btn">🔵 طلب توثيق الحساب عبر التليجرام</a>
+            </div>
+            <hr style="margin: 10px 0;">
+            <h4>📋 إعلاناتي النشطة:</h4>
+            <div id="my-ads-list" class="results-container">
+                <p class="placeholder-text">جاري تحميل إعلاناتك...</p>
+            </div>
+        </div>
+
+        <!-- حاوية النتائج -->
         <div id="results" class="results-container">
             <p class="placeholder-text">حدد خيارات البحث للوصول للإعلانات المطابقة.</p>
         </div>
