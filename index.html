@@ -4,9 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>دليل خدمات بورتسودان</title>
-    <!-- مكتبة تليجرام للتطبيقات المصغرة -->
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <!-- مكتبة Supabase -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link rel="stylesheet" href="style.css">
 </head>
@@ -19,7 +17,6 @@
 
     <main class="container">
         
-        <!-- أزرار التنقل -->
         <div class="nav-buttons">
             <button id="nav-search" class="nav-btn active">🔍 البحث عن خدمة</button>
             <button id="nav-add" class="nav-btn">➕ إضافة إعلان احترافي</button>
@@ -34,7 +31,7 @@
                 </select>
             </div>
 
-            <!-- قائمة فرعية 1: التخصص / الخدمة -->
+            <!-- القوائم المتداخلة الفرعية -->
             <div class="form-group hidden" id="sub-type-group">
                 <label for="sub-type-select">التخصص / الخدمة:</label>
                 <select id="sub-type-select">
@@ -42,7 +39,6 @@
                 </select>
             </div>
 
-            <!-- قائمة فرعية 2: المهارة / المركبة -->
             <div class="form-group hidden" id="detail-group">
                 <label for="detail-select">المهارة / نوع المركبة:</label>
                 <select id="detail-select">
@@ -60,10 +56,9 @@
             <button id="search-btn" class="btn">🔍 عرض النتائج المخصصة</button>
         </div>
 
-        <!-- 2. قسم إضافة إعلان جديد مع الشرح والتصنيفات المتداخلة -->
+        <!-- 2. قسم إضافة إعلان جديد مع الشرح -->
         <div id="add-section" class="card-box hidden">
             
-            <!-- بطاقة إرشادات لكتابة أفضل إعلان -->
             <div class="guide-card">
                 💡 <strong>كيف تجعل إعلانك جذاباً للعملاء؟</strong>
                 <ul>
@@ -121,7 +116,6 @@
             <button id="save-ad-btn" class="btn btn-success">✨ نشر الإعلان فوراً</button>
         </div>
 
-        <!-- عرض كروت النتائج -->
         <div id="results" class="results-container">
             <p class="placeholder-text">حدد خيارات البحث للوصول للإعلانات المطابقة.</p>
         </div>
