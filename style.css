@@ -1,18 +1,23 @@
 * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, sans-serif; }
 body { background-color: #f4f6f9; color: #222; padding: 12px; direction: rtl; }
-header { text-align: center; margin-bottom: 15px; }
+header { text-align: center; margin-bottom: 12px; }
 header h2 { color: #0088cc; font-size: 20px; }
-header p { color: #666; font-size: 12px; margin-top: 4px; }
+header p { color: #666; font-size: 11px; margin-top: 2px; }
 .container { max-width: 500px; margin: 0 auto; }
 
-.nav-buttons { display: flex; gap: 6px; margin-bottom: 15px; }
-.nav-btn { flex: 1; padding: 10px 4px; border: 1px solid #0088cc; background: #fff; color: #0088cc; border-radius: 8px; font-size: 12px; font-weight: bold; cursor: pointer; text-align: center; }
+/* أزرار التنقل العلوي */
+.nav-buttons { display: flex; gap: 4px; margin-bottom: 12px; overflow-x: auto; padding-bottom: 2px; }
+.nav-btn { flex: 1; min-width: 70px; padding: 10px 2px; border: 1px solid #0088cc; background: #fff; color: #0088cc; border-radius: 8px; font-size: 11px; font-weight: bold; cursor: pointer; text-align: center; white-space: nowrap; }
 .nav-btn.active { background: #0088cc; color: #fff; }
+.vip-nav-btn { border-color: #f1c40f; color: #d4ac0d; }
+.vip-nav-btn.active { background: #f1c40f; color: #000; }
+.gozlanee-nav-btn { border-color: #27ae60; color: #27ae60; }
+.gozlanee-nav-btn.active { background: #27ae60; color: #fff; }
 
 .card-box { background: #ffffff; padding: 15px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); margin-bottom: 20px; }
 .hidden { display: none !important; }
 .form-group { margin-bottom: 12px; }
-label { display: block; font-size: 13px; font-weight: bold; margin-bottom: 5px; color: #444; }
+label { display: block; font-size: 12px; font-weight: bold; margin-bottom: 5px; color: #444; }
 select, input, textarea { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px; font-size: 13px; background-color: #fff; outline: none; }
 textarea { height: 70px; resize: none; }
 
@@ -20,27 +25,40 @@ textarea { height: 70px; resize: none; }
 .intent-btn { flex: 1; padding: 8px; border: 1px solid #ddd; background: #f8f9fa; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: bold; text-align: center; }
 .intent-btn.active { background: #0088cc; color: white; border-color: #0088cc; }
 
-.btn { width: 100%; background-color: #0088cc; color: white; border: none; padding: 12px; border-radius: 8px; font-size: 14px; font-weight: bold; cursor: pointer; }
+.btn { width: 100%; background-color: #0088cc; color: white; border: none; padding: 12px; border-radius: 8px; font-size: 13px; font-weight: bold; cursor: pointer; }
 .btn-success { background-color: #28a745; }
-.btn-danger { background-color: #dc3545; color: white; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 12px; }
+.btn-danger { background-color: #dc3545; color: white; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 11px; }
 .btn-secondary { background: #e0e0e0; border: none; padding: 8px; border-radius: 6px; font-size: 11px; cursor: pointer; }
 .btn-copy { background: #17a2b8; color: white; border: none; padding: 6px 10px; border-radius: 4px; font-size: 11px; cursor: pointer; margin: 5px 0; }
 .btn-wa { display: block; background: #25D366; color: white; text-align: center; text-decoration: none; padding: 8px; border-radius: 6px; font-size: 12px; font-weight: bold; margin-top: 6px; }
 
+/* الإعلانات والعروض */
 .promo-box { border: 1px dashed #ccc; padding: 10px; border-radius: 8px; margin-bottom: 12px; }
+.gozlanee-accept-box { background: #e8f8f5; border-color: #27ae60; }
 .urgent-box { background: #fff5f5; border-color: #e53e3e; }
 .vip-box-wrap { background: #fffdf0; border-color: #f1c40f; }
-.checkbox-label { cursor: pointer; font-size: 13px; }
+.checkbox-label { cursor: pointer; font-size: 12px; }
 .promo-desc { font-size: 11px; color: #666; margin-top: 2px; }
 .inner-pay-box { background: #fff; padding: 8px; border-radius: 6px; border: 1px solid #ddd; margin-top: 8px; font-size: 12px; }
 
+/* الشعار الترويجي لـ "جُذلاني" (Sudanese dialect box) */
+.promo-banner-card { background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%); color: #fff; border-radius: 12px; padding: 14px; margin-bottom: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+.promo-banner-header { display: flex; justify-content: space-between; align-items: center; font-weight: bold; font-size: 13px; border-bottom: 1px solid rgba(255,255,255,0.2); padding-bottom: 6px; margin-bottom: 8px; }
+.close-promo-btn { background: none; border: none; color: #fff; font-size: 16px; cursor: pointer; }
+.promo-banner-body p { font-size: 12px; margin-bottom: 6px; line-height: 1.4; }
+.promo-banner-body ul { list-style: none; padding: 0; margin-bottom: 10px; }
+.promo-banner-body li { font-size: 11px; margin-bottom: 4px; line-height: 1.3; }
+.promo-banner-footer { display: flex; flex-direction: column; gap: 6px; align-items: center; border-top: 1px dashed rgba(255,255,255,0.3); padding-top: 8px; font-size: 11px; }
+.btn-promo-action { background: #27ae60; color: white; border: none; padding: 8px 14px; border-radius: 20px; font-size: 11px; font-weight: bold; cursor: pointer; }
+
+/* بطاقات النتائج */
 .results-container { display: flex; flex-direction: column; gap: 12px; }
 .ad-card { background: #fff; padding: 12px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); border-right: 4px solid #0088cc; }
 .vip-card { border-right-color: #f1c40f; background: #fffef5; border: 2px solid #f1c40f; }
 .urgent-card { border-right-color: #e53e3e; }
 
 .card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 4px; }
-.card-header h4 { color: #0088cc; font-size: 15px; }
+.card-header h4 { color: #0088cc; font-size: 14px; }
 .ad-code-badge { background-color: #2b5278; color: #fff; font-size: 11px; padding: 3px 6px; border-radius: 4px; font-weight: bold; }
 
 .publisher-info { font-size: 11px; color: #666; margin-bottom: 6px; }
@@ -52,160 +70,78 @@ textarea { height: 70px; resize: none; }
 .request-badge { background: #fbe9e7; color: #d84315; }
 .vip-badge { background: #f1c40f; color: #000; }
 .urgent-badge { background: #e53e3e; color: #fff; }
+.gozlanee-badge { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
 
 .location-badge { font-size: 11px; background: #f0f0f0; padding: 2px 6px; border-radius: 4px; display: inline-block; margin-bottom: 6px; }
 .ad-text { font-size: 12px; color: #444; margin-bottom: 10px; white-space: pre-line; }
 .card-actions { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
 .contact-btn { background: #25D366; color: white; padding: 8px 12px; border-radius: 6px; text-decoration: none; font-size: 12px; font-weight: bold; }
 
-/* ==========================================
-   تنسيقات الملف الشخصي الاحترافي (نمط تليجرام)
-   ========================================== */
-.profile-telegram-theme {
-    background-color: #17212b !important;
-    color: #ffffff !important;
-    border-radius: 16px;
-    padding: 20px 16px !important;
-}
+/* قسم الملف الشخصي ونمط تليجرام الداكن */
+.profile-telegram-theme { background-color: #17212b !important; color: #ffffff !important; border-radius: 16px; padding: 18px 14px !important; }
+.profile-header-tg { text-align: center; margin-bottom: 16px; }
+.avatar-container { position: relative; display: inline-block; margin-bottom: 6px; }
+.avatar-container img { width: 90px; height: 90px; border-radius: 50%; object-fit: cover; border: 3px solid #2b5278; }
+.online-indicator { position: absolute; bottom: 4px; left: 4px; width: 12px; height: 12px; background-color: #00c853; border: 2px solid #17212b; border-radius: 50%; }
 
-.profile-header-tg {
-    text-align: center;
-    margin-bottom: 20px;
-}
+#profile-full-name { font-size: 17px; font-weight: bold; color: #ffffff; }
+.status-online { font-size: 11px; color: #6c7883; }
 
-.avatar-container {
-    position: relative;
-    display: inline-block;
-    margin-bottom: 8px;
-}
+.profile-actions-grid { display: flex; gap: 8px; margin-bottom: 16px; }
+.tg-action-btn { flex: 1; background-color: #242f3d; border: none; border-radius: 10px; padding: 10px 4px; color: #64b5f6; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 11px; font-weight: bold; cursor: pointer; }
+.tg-action-btn.highlight-gz { background-color: #1b4332; color: #2ecc71; border: 1px solid #2ecc71; }
+.tg-action-btn .icon { font-style: normal; font-size: 16px; margin-bottom: 2px; }
 
-.avatar-container img {
-    width: 100px;
-    height: 100px;
-    border-radius: 50%;
-    object-fit: cover;
-    border: 3px solid #2b5278;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-}
+.tg-info-card { background-color: #242f3d; border-radius: 12px; padding: 12px; margin-bottom: 16px; }
+.tg-info-row { display: flex; flex-direction: column; text-align: right; }
+.tg-info-val { font-size: 14px; font-weight: 500; color: #e3f2fd; }
+.highlight-code { color: #64b5f6; font-size: 16px; font-weight: bold; font-family: monospace; }
+.tg-info-lbl { font-size: 11px; color: #708499; margin-bottom: 2px; }
+.tg-divider { height: 1px; background-color: #17212b; margin: 8px 0; }
+.profile-social-input { background: #17212b; border: 1px solid #2b5278; color: #64b5f6; padding: 6px 10px; border-radius: 6px; font-size: 12px; margin-top: 4px; }
 
-.online-indicator {
-    position: absolute;
-    bottom: 6px;
-    left: 6px;
-    width: 14px;
-    height: 14px;
-    background-color: #00c853;
-    border: 2px solid #17212b;
-    border-radius: 50%;
-}
+.profile-tabs-bar { display: flex; background-color: #242f3d; border-radius: 20px; padding: 3px; margin-bottom: 12px; }
+.profile-tab-btn { flex: 1; background: none; border: none; color: #708499; padding: 8px; border-radius: 16px; font-size: 11px; font-weight: bold; }
+.profile-tab-btn.active { background-color: #2b5278; color: #ffffff; }
 
-#profile-full-name {
-    font-size: 18px;
-    font-weight: bold;
-    color: #ffffff;
-    margin-bottom: 2px;
-}
+/* تنسيقات محفظة جُذلاني */
+.gozlanee-header { text-align: center; margin-bottom: 15px; }
+.gozlanee-header h3 { color: #2ecc71; font-size: 18px; }
+.gozlanee-header p { color: #a0aec0; font-size: 11px; }
 
-.status-online {
-    font-size: 12px;
-    color: #6c7883;
-}
+.gozlanee-balance-card { background: #242f3d; border: 1px solid #2ecc71; border-radius: 12px; padding: 12px; display: flex; justify-content: space-around; text-align: center; margin-bottom: 15px; }
+.bal-box { display: flex; flex-direction: column; gap: 4px; }
+.bal-label { font-size: 11px; color: #a0aec0; }
+.bal-amount { font-size: 15px; font-weight: bold; color: #2ecc71; }
+.bal-amount.frozen { color: #e74c3c; }
+.bal-divider { width: 1px; background: #2b5278; }
 
-.profile-actions-grid {
-    display: flex;
-    gap: 8px;
-    margin-bottom: 18px;
-}
+.gozlanee-actions { display: flex; gap: 6px; margin-bottom: 15px; flex-wrap: wrap; }
+.gz-btn { flex: 1; min-width: 120px; padding: 10px; border: none; border-radius: 8px; font-size: 11px; font-weight: bold; cursor: pointer; color: white; }
+.btn-topup { background-color: #27ae60; }
+.btn-escrow { background-color: #2980b9; }
+.btn-gift { background-color: #8e44ad; }
 
-.tg-action-btn {
-    flex: 1;
-    background-color: #242f3d;
-    border: none;
-    border-radius: 10px;
-    padding: 10px 4px;
-    color: #64b5f6;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    text-decoration: none;
-    font-size: 11px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: background 0.2s;
-}
+.gz-sub-card { background: #242f3d; border-radius: 10px; padding: 12px; margin-bottom: 15px; border: 1px solid #2b5278; }
+.gz-sub-card h4 { color: #64b5f6; font-size: 13px; margin-bottom: 8px; }
+.bankak-guide { background: #17212b; padding: 8px; border-radius: 6px; font-size: 11px; color: #cbd5e0; margin-bottom: 10px; border-right: 3px solid #27ae60; }
+.gz-notice { font-size: 11px; color: #cbd5e0; margin-bottom: 10px; line-height: 1.3; }
 
-.tg-action-btn:hover {
-    background-color: #2b5278;
-}
+.gz-statement-section h4 { color: #e2e8f0; font-size: 13px; margin-bottom: 10px; }
+.statement-list { display: flex; flex-direction: column; gap: 6px; max-height: 200px; overflow-y: auto; }
+.st-item { background: #17212b; padding: 8px 10px; border-radius: 6px; font-size: 11px; display: flex; justify-content: space-between; align-items: center; }
+.st-type-topup { border-right: 3px solid #27ae60; }
+.st-type-frozen { border-right: 3px solid #e74c3c; }
+.st-type-trans { border-right: 3px solid #3498db; }
 
-.tg-action-btn .icon {
-    font-style: normal;
-    font-size: 16px;
-    margin-bottom: 3px;
-}
-
-.tg-info-card {
-    background-color: #242f3d;
-    border-radius: 12px;
-    padding: 12px 14px;
-    margin-bottom: 18px;
-}
-
-.tg-info-row {
-    display: flex;
-    flex-direction: column;
-    text-align: right;
-}
-
-.tg-info-val {
-    font-size: 14px;
-    font-weight: 500;
-    color: #e3f2fd;
-    direction: ltr;
-    text-align: right;
-}
-
-.highlight-code {
-    color: #64b5f6;
-    font-size: 16px;
-    font-weight: bold;
-    font-family: monospace;
-}
-
-.tg-info-lbl {
-    font-size: 11px;
-    color: #708499;
-    margin-top: 2px;
-}
-
-.tg-divider {
-    height: 1px;
-    background-color: #17212b;
-    margin: 8px 0;
-}
-
-.profile-tabs-bar {
-    display: flex;
-    background-color: #242f3d;
-    border-radius: 20px;
-    padding: 3px;
-    margin-bottom: 15px;
-}
-
-.profile-tab-btn {
-    flex: 1;
-    background: none;
-    border: none;
-    color: #708499;
-    padding: 8px;
-    border-radius: 16px;
-    font-size: 12px;
-    font-weight: bold;
-    cursor: pointer;
-}
-
-.profile-tab-btn.active {
-    background-color: #2b5278;
-    color: #ffffff;
-}
+/* معرض الأعمال */
+.portfolio-header { text-align: center; margin-bottom: 15px; }
+.portfolio-header h3 { color: #64b5f6; font-size: 17px; }
+.add-portfolio-box { background: #242f3d; padding: 12px; border-radius: 10px; margin-bottom: 15px; }
+.portfolio-grid { display: flex; flex-direction: column; gap: 12px; }
+.pf-item { background: #242f3d; padding: 10px; border-radius: 10px; border: 1px solid #2b5278; }
+.pf-title { color: #64b5f6; font-size: 13px; font-weight: bold; margin-bottom: 8px; }
+.pf-images-comparison { display: flex; gap: 8px; }
+.pf-img-box { flex: 1; text-align: center; }
+.pf-img-box img { width: 100%; height: 100px; object-fit: cover; border-radius: 6px; }
+.pf-img-lbl { font-size: 10px; color: #a0aec0; margin-top: 4px; }
