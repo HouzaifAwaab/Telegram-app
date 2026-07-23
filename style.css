@@ -23,7 +23,7 @@ textarea { height: 70px; resize: none; }
 .btn { width: 100%; background-color: #0088cc; color: white; border: none; padding: 12px; border-radius: 8px; font-size: 14px; font-weight: bold; cursor: pointer; }
 .btn-success { background-color: #28a745; }
 .btn-danger { background-color: #dc3545; color: white; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 12px; }
-.btn-secondary { background: #e0e0e0; border: none; padding: 8px; border-radius: 6px; font-size: 12px; cursor: pointer; }
+.btn-secondary { background: #e0e0e0; border: none; padding: 8px; border-radius: 6px; font-size: 11px; cursor: pointer; }
 .btn-copy { background: #17a2b8; color: white; border: none; padding: 6px 10px; border-radius: 4px; font-size: 11px; cursor: pointer; margin: 5px 0; }
 .btn-wa { display: block; background: #25D366; color: white; text-align: center; text-decoration: none; padding: 8px; border-radius: 6px; font-size: 12px; font-weight: bold; margin-top: 6px; }
 
@@ -39,9 +39,14 @@ textarea { height: 70px; resize: none; }
 .vip-card { border-right-color: #f1c40f; background: #fffef5; border: 2px solid #f1c40f; }
 .urgent-card { border-right-color: #e53e3e; }
 
-.card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px; }
+.card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 4px; }
 .card-header h4 { color: #0088cc; font-size: 15px; }
-.badges { display: flex; flex-wrap: wrap; gap: 4px; }
+.ad-code-badge { background-color: #2b5278; color: #fff; font-size: 11px; padding: 3px 6px; border-radius: 4px; font-weight: bold; }
+
+.publisher-info { font-size: 11px; color: #666; margin-bottom: 6px; }
+.user-code-tag { background: #e3f2fd; color: #0d47a1; padding: 1px 5px; border-radius: 4px; font-weight: bold; font-family: monospace; }
+
+.badges { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 6px; }
 .badge { font-size: 10px; padding: 2px 6px; border-radius: 4px; font-weight: bold; }
 .offer-badge { background: #e3f2fd; color: #1976d2; }
 .request-badge { background: #fbe9e7; color: #d84315; }
@@ -50,9 +55,8 @@ textarea { height: 70px; resize: none; }
 
 .location-badge { font-size: 11px; background: #f0f0f0; padding: 2px 6px; border-radius: 4px; display: inline-block; margin-bottom: 6px; }
 .ad-text { font-size: 12px; color: #444; margin-bottom: 10px; white-space: pre-line; }
-.card-actions { display: flex; gap: 8px; align-items: center; }
+.card-actions { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
 .contact-btn { background: #25D366; color: white; padding: 8px 12px; border-radius: 6px; text-decoration: none; font-size: 12px; font-weight: bold; }
-.verify-badge-btn { display: inline-block; background: #0088cc; color: white; text-decoration: none; padding: 6px 10px; border-radius: 6px; font-size: 11px; font-weight: bold; }
 
 /* ==========================================
    تنسيقات الملف الشخصي الاحترافي (نمط تليجرام)
@@ -107,7 +111,6 @@ textarea { height: 70px; resize: none; }
     color: #6c7883;
 }
 
-/* أزرار الإجراءات */
 .profile-actions-grid {
     display: flex;
     gap: 8px;
@@ -142,7 +145,6 @@ textarea { height: 70px; resize: none; }
     margin-bottom: 3px;
 }
 
-/* كارت البيانات */
 .tg-info-card {
     background-color: #242f3d;
     border-radius: 12px;
@@ -164,6 +166,13 @@ textarea { height: 70px; resize: none; }
     text-align: right;
 }
 
+.highlight-code {
+    color: #64b5f6;
+    font-size: 16px;
+    font-weight: bold;
+    font-family: monospace;
+}
+
 .tg-info-lbl {
     font-size: 11px;
     color: #708499;
@@ -176,7 +185,6 @@ textarea { height: 70px; resize: none; }
     margin: 8px 0;
 }
 
-/* تبويبات الملف */
 .profile-tabs-bar {
     display: flex;
     background-color: #242f3d;
