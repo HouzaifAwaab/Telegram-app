@@ -213,17 +213,58 @@
             <button id="save-ad-btn" class="btn btn-success">✨ نشر الإعلان الآن</button>
         </div>
 
-        <!-- 3. قسم الملف الشخصي -->
-        <div id="profile-section" class="card-box hidden">
-            <div class="profile-header">
-                <h3>👤 الملف الشخصي</h3>
-                <a href="https://t.me/HUZAIFA1999" target="_blank" class="verify-badge-btn">🔵 طلب توثيق الحساب عبر التليجرام</a>
+        <!-- 3. قسم الملف الشخصي المطور (نمط تليجرام/فيسبوك) -->
+        <div id="profile-section" class="card-box hidden profile-telegram-theme">
+            
+            <!-- الهيدر وصورة البروفايل -->
+            <div class="profile-header-tg">
+                <div class="avatar-container">
+                    <img id="user-avatar" src="https://via.placeholder.com/110?text=User" alt="صورة المستخدم">
+                    <span class="online-indicator"></span>
+                </div>
+                <h3 id="profile-full-name">جاري التحميل...</h3>
+                <p id="profile-online-status" class="status-online">متصل الآن</p>
             </div>
-            <hr style="margin: 10px 0;">
-            <h4>📋 إعلاناتي النشطة:</h4>
+
+            <!-- أزرار الإجراءات السريعة -->
+            <div class="profile-actions-grid">
+                <a id="telegram-direct-link" href="https://t.me/HUZAIFA1999" target="_blank" class="tg-action-btn">
+                    <i class="icon">💬</i>
+                    <span>مراسلة الدعم</span>
+                </a>
+                <button class="tg-action-btn" onclick="openVerificationInfo()">
+                    <i class="icon">🔵</i>
+                    <span>توثيق الحساب</span>
+                </button>
+                <button class="tg-action-btn" onclick="refreshProfileData()">
+                    <i class="icon">🔄</i>
+                    <span>تحديث البيانات</span>
+                </button>
+            </div>
+
+            <!-- كارت البيانات الشخصية المقتبسة من تليجرام -->
+            <div class="tg-info-card">
+                <div class="tg-info-row">
+                    <span class="tg-info-val" id="profile-username">@غير محدد</span>
+                    <span class="tg-info-lbl">اسم المستخدم (Telegram Handle)</span>
+                </div>
+                <div class="tg-divider"></div>
+                <div class="tg-info-row">
+                    <span class="tg-info-val" id="profile-user-id">00000000</span>
+                    <span class="tg-info-lbl">معرف الحساب (User ID)</span>
+                </div>
+            </div>
+
+            <!-- تبويبات المنشورات / الإعلانات -->
+            <div class="profile-tabs-bar">
+                <button class="profile-tab-btn active" onclick="switchProfileTab('my-ads')">📋 إعلاناتي النشطة</button>
+            </div>
+
+            <!-- قائمة إعلانات المستخدم -->
             <div id="my-ads-list" class="results-container">
                 <p class="placeholder-text">جاري تحميل إعلاناتك...</p>
             </div>
+
         </div>
 
         <!-- حاوية النتائج -->
