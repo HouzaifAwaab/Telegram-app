@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>دليل خدمات بورتسودان</title>
+    <title>دليل خدمات بورتسودان | منصة جُذلاني</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link rel="stylesheet" href="style.css">
@@ -12,73 +12,80 @@
 
     <header>
         <h2>🛠️ دليل خدمات بورتسودان</h2>
-        <p>المنصة المباشرة لربط الخدمات والمهن بجميع الأحياء</p>
+        <p>المنصة المباشرة لربط الخدمات والمهن بجميع الأحياء مع ضمان 💳 جُذلاني</p>
     </header>
 
     <main class="container">
         
-        <!-- أزرار التنقل الرئيسية -->
+        <!-- أزرار التنقل الرئيسية التفاعلية -->
         <div class="nav-buttons">
-            <button id="nav-search" class="nav-btn active">🔍 البحث عن خدمة</button>
+            <button id="nav-search" class="nav-btn active">🔍 البحث</button>
+            <button id="nav-vip" class="nav-btn vip-nav-btn">⭐ المميزة</button>
             <button id="nav-add" class="nav-btn">➕ إضافة إعلان</button>
-            <button id="nav-profile" class="nav-btn">👤 ملفي الشخصي</button>
+            <button id="nav-gozlanee" class="nav-btn gozlanee-nav-btn">💳 جُذلاني</button>
+            <button id="nav-profile" class="nav-btn">👤 ملفي</button>
         </div>
 
-        <!-- 1. قسم البحث المتقدم -->
+        <!-- الإشعار الترويجي لـ "جُذلاني" بالدارجي السوداني (يظهر تلقائياً كل 3 أيام) -->
+        <div id="gozlanee-promo-banner" class="promo-banner-card hidden">
+            <div class="promo-banner-header">
+                <span>💡 قروشك في أمان.. وشغلك بيتم تمام! 🤝✨</span>
+                <button onclick="closePromoBanner()" class="close-promo-btn">✕</button>
+            </div>
+            <div class="promo-banner-body">
+                <p>يا <strong>مكتب</strong>، عارف إنك ممكن تدفع وتضمن حقك بـ <strong>"جُذلاني"</strong>؟</p>
+                <ul>
+                    <li>🔒 <strong>للزبون:</strong> قروشك بتتجمد في جُذلاني وما بتطلع للفني إلا بعد ما يستلم شغلك وتقتنع بيهو 100%!</li>
+                    <li>🔒 <strong>للصنايعي:</strong> حقك مضمون ومحجوز مسبقاً، تشتغل وأنت مرتاح وضميرك هادي!</li>
+                    <li>⚡ <strong>بدون تعقيد:</strong> تحويل سريع من بنكك، وإدارة المنصة هي الضامن بيناتكم.</li>
+                </ul>
+                <div class="promo-banner-footer">
+                    <span>💳 تغذية جُذلاني بتتم في ثواني عبر "بنكك"!</span>
+                    <button onclick="switchToGozlaneeSection()" class="btn-promo-action">👈 ادخل على جُذلاني الآن</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 1. قسم البحث المتقدم والنتائج -->
         <div id="search-section" class="card-box">
-            
             <div class="intent-selector">
                 <button id="filter-all" class="intent-btn active">الكل</button>
                 <button id="filter-offers" class="intent-btn">🛠️ عروض الخدمات</button>
                 <button id="filter-requests" class="intent-btn">🙋‍♂️ طلبات الخدمات</button>
             </div>
 
-            <!-- البحث السريع النصي وبالأكواد -->
             <div class="form-group">
                 <input type="text" id="live-search-input" placeholder="🔍 ابحث بالاسم، الحي، أو الكود مباشرة (مثال: #1001 أو HU7406)">
             </div>
 
             <div class="form-group">
                 <label for="category-select">المهن:</label>
-                <select id="category-select">
-                    <option value="">جاري تحميل المهن...</option>
-                </select>
+                <select id="category-select"><option value="">جاري تحميل المهن...</option></select>
             </div>
 
             <div class="form-group hidden" id="sub-type-group">
                 <label for="sub-type-select">التخصص / الخدمة:</label>
-                <select id="sub-type-select">
-                    <option value="">-- اختر التخصص --</option>
-                </select>
+                <select id="sub-type-select"><option value="">-- اختر التخصص --</option></select>
             </div>
 
             <div class="form-group hidden" id="detail-group">
                 <label for="detail-select">المهارة / نوع المركبة:</label>
-                <select id="detail-select">
-                    <option value="">-- اختر التحديد --</option>
-                </select>
+                <select id="detail-select"><option value="">-- اختر التحديد --</option></select>
             </div>
 
-            <!-- الهيكلة الجغرافية -->
             <div class="form-group">
                 <label for="main-zone-select">القطاع / المنطقة الرئيسية:</label>
-                <select id="main-zone-select">
-                    <option value="">جاري تحميل القطاعات...</option>
-                </select>
+                <select id="main-zone-select"><option value="">جاري تحميل القطاعات...</option></select>
             </div>
 
             <div class="form-group hidden" id="sub-zone-group">
                 <label for="sub-zone-select">التقسيم الفرعي للقطاع:</label>
-                <select id="sub-zone-select">
-                    <option value="">-- اختر التقسيم --</option>
-                </select>
+                <select id="sub-zone-select"><option value="">-- اختر التقسيم --</option></select>
             </div>
 
             <div class="form-group hidden" id="neighborhood-group">
                 <label for="neighborhood-select">الحي:</label>
-                <select id="neighborhood-select">
-                    <option value="">-- اختر الحي --</option>
-                </select>
+                <select id="neighborhood-select"><option value="">-- اختر الحي --</option></select>
             </div>
 
             <div class="form-group hidden" id="block-num-group">
@@ -91,7 +98,6 @@
 
         <!-- 2. قسم إضافة إعلان جديد -->
         <div id="add-section" class="card-box hidden">
-            
             <div class="intent-selector add-intent">
                 <button id="tab-add-offer" class="intent-btn active">🛠️ تقديم خدمة (أنا فني/سائق)</button>
                 <button id="tab-add-request" class="intent-btn">🙋‍♂️ طلب خدمة (أبحث عن فني)</button>
@@ -104,45 +110,32 @@
 
             <div class="form-group">
                 <label for="add-category-select">المهن:</label>
-                <select id="add-category-select">
-                    <option value="">جاري تحميل المهن...</option>
-                </select>
+                <select id="add-category-select"><option value="">جاري تحميل المهن...</option></select>
             </div>
 
             <div class="form-group hidden" id="add-sub-type-group">
                 <label for="add-sub-type-select">التخصص / الخدمة:</label>
-                <select id="add-sub-type-select">
-                    <option value="">-- اختر التخصص --</option>
-                </select>
+                <select id="add-sub-type-select"><option value="">-- اختر التخصص --</option></select>
             </div>
 
             <div class="form-group hidden" id="add-detail-group">
                 <label for="add-detail-select">المهارة / نوع المركبة:</label>
-                <select id="add-detail-select">
-                    <option value="">-- اختر التحديد --</option>
-                </select>
+                <select id="add-detail-select"><option value="">-- اختر التحديد --</option></select>
             </div>
 
-            <!-- القطاعات الجغرافية -->
             <div class="form-group">
                 <label for="add-main-zone-select">القطاع الرئيسي:</label>
-                <select id="add-main-zone-select">
-                    <option value="">جاري تحميل القطاعات...</option>
-                </select>
+                <select id="add-main-zone-select"><option value="">جاري تحميل القطاعات...</option></select>
             </div>
 
             <div class="form-group hidden" id="add-sub-zone-group">
                 <label for="add-sub-zone-select">التقسيم الفرعي للقطاع:</label>
-                <select id="add-sub-zone-select">
-                    <option value="">-- اختر التقسيم --</option>
-                </select>
+                <select id="add-sub-zone-select"><option value="">-- اختر التقسيم --</option></select>
             </div>
 
             <div class="form-group hidden" id="add-neighborhood-group">
                 <label for="add-neighborhood-select">الحي:</label>
-                <select id="add-neighborhood-select">
-                    <option value="">-- اختر الحي --</option>
-                </select>
+                <select id="add-neighborhood-select"><option value="">-- اختر الحي --</option></select>
             </div>
 
             <div class="form-group hidden" id="add-block-num-group">
@@ -150,7 +143,6 @@
                 <input type="text" id="add-block-num-input" placeholder="مثال: مربع 5">
             </div>
 
-            <!-- الحقول الخاصة بمقدم الخدمة -->
             <div id="offer-specific-fields">
                 <div class="form-group">
                     <label>سنوات الخبرة / سابقة الأعمال:</label>
@@ -162,7 +154,6 @@
                 </div>
             </div>
 
-            <!-- الحقول الخاصة بطالب الخدمة -->
             <div id="request-specific-fields" class="hidden">
                 <div class="form-group">
                     <label>الميزانية المتوقعة (اختياري):</label>
@@ -180,7 +171,14 @@
                 <textarea id="tech-details" placeholder="اكتب باقي التفاصيل والاشتراطات هنا..."></textarea>
             </div>
 
-            <!-- خيار الإعلان العاجل -->
+            <!-- خيار قبول الدفع عبر جُذلاني يمنح أولوية الظهور -->
+            <div class="promo-box gozlanee-accept-box">
+                <label class="checkbox-label">
+                    <input type="checkbox" id="accept-gozlanee-check" checked>
+                    💳 <strong>مقبول عبر جُذلاني (يمنح إعلانك أولوية في الظهور للزبائن)</strong>
+                </label>
+            </div>
+
             <div class="promo-box urgent-box">
                 <label class="checkbox-label">
                     <input type="checkbox" id="urgent-ad-check"> 
@@ -194,14 +192,12 @@
                 </div>
             </div>
 
-            <!-- خيار الإعلان المميز المدفوع (VIP) -->
             <div class="promo-box vip-box-wrap">
                 <label class="checkbox-label">
                     <input type="checkbox" id="vip-ad-check"> 
                     🌟 <strong>ترقية الإعلان للتثبيت (2000 جنيه)</strong>
                 </label>
                 <p class="promo-desc">يثبت إعلانك شهرين في أعلى النتائج وفي قنوات ومجموعات التواصل.</p>
-                
                 <div id="vip-payment-info" class="hidden inner-pay-box">
                     <p>الحساب: <code>4633063</code> (حذيفه محمدنور محمد همد)</p>
                     <button type="button" class="btn-copy" onclick="copyAccountNum()">📋 نسخ رقم الحساب</button>
@@ -213,9 +209,124 @@
             <button id="save-ad-btn" class="btn btn-success">✨ نشر الإعلان الآن</button>
         </div>
 
-        <!-- 3. قسم الملف الشخصي المطور (مع عرض الكود الفريد) -->
-        <div id="profile-section" class="card-box hidden profile-telegram-theme">
+        <!-- 3. قسم نظام محفظة "جُذلاني" الذكية (Smart Escrow Wallet) -->
+        <div id="gozlanee-section" class="card-box hidden profile-telegram-theme">
+            <div class="gozlanee-header">
+                <h3>💳 محفظة جُذلاني (الضامن المالي)</h3>
+                <p>نظام الدفع الآمن والمحمي بين الزبون والفني</p>
+            </div>
+
+            <!-- بطاقة كشف الرصيد -->
+            <div class="gozlanee-balance-card">
+                <div class="bal-box">
+                    <span class="bal-label">🟢 الرصيد المتاح</span>
+                    <span class="bal-amount" id="gz-available-bal">0.00 ج.س</span>
+                </div>
+                <div class="bal-divider"></div>
+                <div class="bal-box">
+                    <span class="bal-label">🔒 المبالغ المجمدة</span>
+                    <span class="bal-amount frozen" id="gz-frozen-bal">0.00 ج.س</span>
+                </div>
+            </div>
+
+            <!-- أزرار الإجراءات في جُذلاني -->
+            <div class="gozlanee-actions">
+                <button onclick="toggleGozlaneeSubTab('topup')" class="gz-btn btn-topup">📥 تغذية جُذلاني عبر بنكك</button>
+                <button onclick="toggleGozlaneeSubTab('pay')" class="gz-btn btn-escrow">🤝 دفع لخدمة (تجميد 60د)</button>
+                <button onclick="toggleGozlaneeSubTab('transfer')" class="gz-btn btn-gift">🎁 تحويل مباشر / إهداء</button>
+            </div>
+
+            <!-- نموذج 1: تغذية الحساب عبر بنكك -->
+            <div id="gz-topup-form" class="gz-sub-card hidden">
+                <h4>📥 تغذية المحفظة عبر تطبيق بنكك</h4>
+                <div class="bankak-guide">
+                    <p>1. قم بتحويل المبلغ إلى حساب بنك الخرطوم: <code>4633063</code> (حذيفه محمدنور)</p>
+                    <p>2. ⚠️ <strong>هام جداً:</strong> اكتب كودك الخاص <strong id="gz-deposit-code-ref">----</strong> في خانة <u>التعليق/الملاحظة</u> أثناء التحويل في تطبيق بنكك.</p>
+                </div>
+                <div class="form-group">
+                    <label>المبلغ المحول (جنيه):</label>
+                    <input type="number" id="gz-topup-amount" placeholder="مثال: 20000">
+                </div>
+                <div class="form-group">
+                    <label>رقم العملية / الإشعار:</label>
+                    <input type="text" id="gz-topup-ref" placeholder="أدخل رقم العملية المنفذة">
+                </div>
+                <button onclick="submitBankakDeposit()" class="btn btn-success">✅ تأكيد التغذية وإرسال الإشعار للإدارة</button>
+            </div>
+
+            <!-- نموذج 2: التجميد والدفع الآمن للخدمة -->
+            <div id="gz-pay-form" class="gz-sub-card hidden">
+                <h4>🤝 تجميد مبلغ لخدمة فني (مهلة 60 دقيقة للموافقة)</h4>
+                <p class="gz-notice">عند إرسال الطلب يتم تجميد المبلغ، ويُمنح الفني 60 دقيقة للموافقة. إذا انتهت المهلة أو رفض، ينفك التجميد تلقائياً ليمتد رصيدك.</p>
+                <div class="form-group">
+                    <label>كود الفني / المستخدم المستهدف:</label>
+                    <input type="text" id="gz-provider-code" placeholder="مثال: TG7406 أو GS1002">
+                </div>
+                <div class="form-group">
+                    <label>المبلغ الاتفاقي (جنيه):</label>
+                    <input type="number" id="gz-escrow-amount" placeholder="مثال: 15000">
+                </div>
+                <div class="form-group">
+                    <label>وصف الخدمة / الاتفاق:</label>
+                    <input type="text" id="gz-escrow-desc" placeholder="مثال: صيانة مكيف اسبليت بالحي">
+                </div>
+                <button onclick="processEscrowFreeze()" class="btn">🔒 تجميد المبلغ وإرسال الطلب للفني</button>
+            </div>
+
+            <!-- نموذج 3: تحويل مباشر / إهداء -->
+            <div id="gz-transfer-form" class="gz-sub-card hidden">
+                <h4>🎁 تحويل مباشر لرصيد جُذلاني صديق</h4>
+                <div class="form-group">
+                    <label>كود المستخدم المستلم:</label>
+                    <input type="text" id="gz-target-code" placeholder="مثال: TG7406">
+                </div>
+                <div class="form-group">
+                    <label>المبلغ (جنيه):</label>
+                    <input type="number" id="gz-transfer-amount" placeholder="مثال: 5000">
+                </div>
+                <button onclick="processDirectTransfer()" class="btn btn-success">💸 تحويل الرصيد فوراً</button>
+            </div>
+
+            <!-- كشف حساب جُذلاني (Mini Statement) -->
+            <div class="gz-statement-section">
+                <h4>📋 كشف حساب جُذلاني (سجل العمليات)</h4>
+                <div id="gz-statement-list" class="statement-list">
+                    <p class="placeholder-text">لا توجد عمليات مسجلة حديثاً.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 4. قسم معرض الأعمال (قبل وبعد) -->
+        <div id="portfolio-section" class="card-box hidden profile-telegram-theme">
+            <div class="portfolio-header">
+                <h3>🖼️ معرض سابقة الأعمال (قبل وبعد)</h3>
+                <p>إستعراض جودة وشغف الفنيين بالصور الحية</p>
+            </div>
             
+            <div class="add-portfolio-box">
+                <h4>➕ إضافة نموذج عمل جديد</h4>
+                <div class="form-group">
+                    <label>عنوان العمل / المشروع:</label>
+                    <input type="text" id="pf-title" placeholder="مثال: صيانة وتأسيس كهرباء شقة بالكامل">
+                </div>
+                <div class="form-group">
+                    <label>رابط صورة (قبل):</label>
+                    <input type="text" id="pf-before-img" placeholder="https://...">
+                </div>
+                <div class="form-group">
+                    <label>رابط صورة (بعد):</label>
+                    <input type="text" id="pf-after-img" placeholder="https://...">
+                </div>
+                <button onclick="addPortfolioItem()" class="btn btn-success">📸 نشر النموذج بالمعرض</button>
+            </div>
+
+            <div id="portfolio-grid" class="portfolio-grid">
+                <!-- يتم التحميل هنا -->
+            </div>
+        </div>
+
+        <!-- 5. قسم الملف الشخصي المطور -->
+        <div id="profile-section" class="card-box hidden profile-telegram-theme">
             <div class="profile-header-tg">
                 <div class="avatar-container">
                     <img id="user-avatar" src="https://via.placeholder.com/110?text=User" alt="صورة المستخدم">
@@ -225,50 +336,62 @@
                 <p id="profile-online-status" class="status-online">متصل الآن</p>
             </div>
 
+            <!-- أزرار الإجراءات الجديدة المفصلة -->
             <div class="profile-actions-grid">
-                <a id="telegram-direct-link" href="https://t.me/HUZAIFA1999" target="_blank" class="tg-action-btn">
-                    <i class="icon">💬</i>
-                    <span>مراسلة الدعم</span>
-                </a>
+                <button class="tg-action-btn" onclick="switchToPortfolioSection()">
+                    <i class="icon">🖼️</i>
+                    <span>معرض الأعمال</span>
+                </button>
+                <button class="tg-action-btn highlight-gz" onclick="switchToGozlaneeSection()">
+                    <i class="icon">💳</i>
+                    <span>جُذلاني</span>
+                </button>
                 <button class="tg-action-btn" onclick="openVerificationInfo()">
                     <i class="icon">🔵</i>
                     <span>توثيق الحساب</span>
                 </button>
-                <button class="tg-action-btn" onclick="refreshProfileData()">
-                    <i class="icon">🔄</i>
-                    <span>تحديث البيانات</span>
-                </button>
             </div>
 
-            <!-- كارت البيانات الشخصية مع عرض الكود الفريد -->
+            <!-- كارت البيانات الشخصية المحدث (معرفات التواصل الاجتماعي الـ 3 بدلاً من ID) -->
             <div class="tg-info-card">
                 <div class="tg-info-row">
                     <span class="tg-info-val highlight-code" id="profile-user-code">------</span>
                     <span class="tg-info-lbl">كودك الثابت المخصص (User Unique Code)</span>
                 </div>
+                
                 <div class="tg-divider"></div>
-                <div class="tg-info-row">
-                    <span class="tg-info-val" id="profile-username">@غير محدد</span>
-                    <span class="tg-info-lbl">معرف المعرف (Telegram Handle)</span>
+
+                <!-- الخانات الثلاث للتواصل الاجتماعي -->
+                <div class="tg-info-row social-edit-row">
+                    <span class="tg-info-lbl">📱 رقم الواتساب (WhatsApp):</span>
+                    <input type="text" id="profile-whatsapp" class="profile-social-input" placeholder="09xxxxxxx" onchange="saveSocialLinks()">
                 </div>
+                
                 <div class="tg-divider"></div>
-                <div class="tg-info-row">
-                    <span class="tg-info-val" id="profile-user-id">00000000</span>
-                    <span class="tg-info-lbl">رقم المعرف الرقمي (User ID)</span>
+                
+                <div class="tg-info-row social-edit-row">
+                    <span class="tg-info-lbl">📘 رابط الفيس بوك (Facebook):</span>
+                    <input type="text" id="profile-facebook" class="profile-social-input" placeholder="fb.com/username" onchange="saveSocialLinks()">
+                </div>
+                
+                <div class="tg-divider"></div>
+                
+                <div class="tg-info-row social-edit-row">
+                    <span class="tg-info-lbl">🎵 رابط التيك توك (TikTok):</span>
+                    <input type="text" id="profile-tiktok" class="profile-social-input" placeholder="@username" onchange="saveSocialLinks()">
                 </div>
             </div>
 
             <div class="profile-tabs-bar">
-                <button class="profile-tab-btn active" onclick="switchProfileTab('my-ads')">📋 إعلاناتي النشطة</button>
+                <button class="profile-tab-btn active">📋 إعلاناتي النشطة</button>
             </div>
 
             <div id="my-ads-list" class="results-container">
                 <p class="placeholder-text">جاري تحميل إعلاناتك...</p>
             </div>
-
         </div>
 
-        <!-- حاوية النتائج -->
+        <!-- حاوية نتائج البحث الرئيسية -->
         <div id="results" class="results-container">
             <p class="placeholder-text">حدد خيارات البحث للوصول للإعلانات المطابقة.</p>
         </div>
