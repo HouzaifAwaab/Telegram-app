@@ -256,7 +256,17 @@ function setActiveTab(active, inactives) {
 // منطق لوحة الإدارة (Admin Logic)
 // ----------------------------------------------------
 function verifyAdminPassword() {
-    const passInput = document.getElementById('admin-pass-input').value;
+    // فحص هل المستخدم الحالي هو أنت عبر تليجرام
+    if (telegramUser && telegramUser.id.toString() === MY_ADMIN_TELEGRAM_ID) {
+        isAdminLoggedIn = true;
+        document.getElementById('admin-login-view').classList.add('hidden');
+        document.getElementById('admin-dashboard-view').classList.remove('hidden');
+        alert("أهلاً بك يا حذيفة، تم التحقق من هويتك ودخول لوحة الإدارة بنجاح!");
+        adminLoadAllAds();
+    } else {
+        alert("عفواً! هذه اللوحة مخصصة لإدارة المنصة فقط.");
+    }
+}
 
     if (passInput === ADMIN_PASSWORD) {
         isAdminLoggedIn = true;
