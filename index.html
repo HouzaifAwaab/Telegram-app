@@ -33,9 +33,9 @@
                 <button id="filter-requests" class="intent-btn">🙋‍♂️ طلبات الخدمات</button>
             </div>
 
-            <!-- البحث السريع النصي -->
+            <!-- البحث السريع النصي وبالأكواد -->
             <div class="form-group">
-                <input type="text" id="live-search-input" placeholder="🔍 بحث سريع بكلمة مفتاحية أو اسم فني/حي...">
+                <input type="text" id="live-search-input" placeholder="🔍 ابحث بالاسم، الحي، أو الكود مباشرة (مثال: #1001 أو HU7406)">
             </div>
 
             <div class="form-group">
@@ -98,7 +98,7 @@
             </div>
 
             <div class="form-group">
-                <label>عنوان الإعلان / الاسم:</label>
+                <label>عنوان الإعلان / الخدمة:</label>
                 <input type="text" id="tech-title" placeholder="مثال: سائق ركشة بالتوريدة / مطلوب فني مكيفات">
             </div>
 
@@ -177,10 +177,10 @@
 
             <div class="form-group">
                 <label>تفاصيل الخدمة والشروط:</label>
-                <textarea id="tech-details" placeholder="اكتب باقي التواصيل والاشتراطات هنا..."></textarea>
+                <textarea id="tech-details" placeholder="اكتب باقي التفاصيل والاشتراطات هنا..."></textarea>
             </div>
 
-            <!-- خيار الإعلان العاجل (Urgent Flag) -->
+            <!-- خيار الإعلان العاجل -->
             <div class="promo-box urgent-box">
                 <label class="checkbox-label">
                     <input type="checkbox" id="urgent-ad-check"> 
@@ -213,10 +213,9 @@
             <button id="save-ad-btn" class="btn btn-success">✨ نشر الإعلان الآن</button>
         </div>
 
-        <!-- 3. قسم الملف الشخصي المطور (نمط تليجرام/فيسبوك) -->
+        <!-- 3. قسم الملف الشخصي المطور (مع عرض الكود الفريد) -->
         <div id="profile-section" class="card-box hidden profile-telegram-theme">
             
-            <!-- الهيدر وصورة البروفايل -->
             <div class="profile-header-tg">
                 <div class="avatar-container">
                     <img id="user-avatar" src="https://via.placeholder.com/110?text=User" alt="صورة المستخدم">
@@ -226,7 +225,6 @@
                 <p id="profile-online-status" class="status-online">متصل الآن</p>
             </div>
 
-            <!-- أزرار الإجراءات السريعة -->
             <div class="profile-actions-grid">
                 <a id="telegram-direct-link" href="https://t.me/HUZAIFA1999" target="_blank" class="tg-action-btn">
                     <i class="icon">💬</i>
@@ -242,25 +240,28 @@
                 </button>
             </div>
 
-            <!-- كارت البيانات الشخصية المقتبسة من تليجرام -->
+            <!-- كارت البيانات الشخصية مع عرض الكود الفريد -->
             <div class="tg-info-card">
                 <div class="tg-info-row">
+                    <span class="tg-info-val highlight-code" id="profile-user-code">------</span>
+                    <span class="tg-info-lbl">كودك الثابت المخصص (User Unique Code)</span>
+                </div>
+                <div class="tg-divider"></div>
+                <div class="tg-info-row">
                     <span class="tg-info-val" id="profile-username">@غير محدد</span>
-                    <span class="tg-info-lbl">اسم المستخدم (Telegram Handle)</span>
+                    <span class="tg-info-lbl">معرف المعرف (Telegram Handle)</span>
                 </div>
                 <div class="tg-divider"></div>
                 <div class="tg-info-row">
                     <span class="tg-info-val" id="profile-user-id">00000000</span>
-                    <span class="tg-info-lbl">معرف الحساب (User ID)</span>
+                    <span class="tg-info-lbl">رقم المعرف الرقمي (User ID)</span>
                 </div>
             </div>
 
-            <!-- تبويبات المنشورات / الإعلانات -->
             <div class="profile-tabs-bar">
                 <button class="profile-tab-btn active" onclick="switchProfileTab('my-ads')">📋 إعلاناتي النشطة</button>
             </div>
 
-            <!-- قائمة إعلانات المستخدم -->
             <div id="my-ads-list" class="results-container">
                 <p class="placeholder-text">جاري تحميل إعلاناتك...</p>
             </div>
