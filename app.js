@@ -9,12 +9,15 @@ if (tg) {
 const SUPABASE_URL = "https://ssnezkzajkxkogieztxb.supabase.co";
 const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNzbmV6a3phamt4a29naWV6dHhiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ4MDY3NjgsImV4cCI6MjEwMDM4Mjc2OH0.XVxtHJDWZAfQ3DplLwPjPgUOVZwYvYfFAAM7PFxqnb8";
 
-// التهيئة المباشرة الآمنة للمكتبة
-const supabaseClient = (window.supabase && window.supabase.createClient) 
-    ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY)
-    : supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+// تهيئة مكتبة Supabase بشكل مضمون وآمن
+const supabaseClient = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY) : null;
 
 document.addEventListener("DOMContentLoaded", async () => {
+    if (!supabaseClient) {
+        console.error("لم يتم تحميل مكتبة Supabase بنجاح!");
+        return;
+    }
+
     await loadCategories();
     await loadNeighborhoods();
 
