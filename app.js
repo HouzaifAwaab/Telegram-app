@@ -2,12 +2,13 @@
 const tg = window.Telegram ? window.Telegram.WebApp : null;
 if (tg) {
     tg.ready();
-    tg.expand(); // توسيع الشاشة
+    tg.expand();
 }
 
-// ⚠️ استبدل البيانات دي برابطك ومفتاحك من إعدادات Supabase (API Settings)
-const SUPABASE_URL = "https://your-project-id.supabase.co";
-const SUPABASE_KEY = "your-anon-key";
+// بيانات مشروعك الحقيقية في Supabase
+const SUPABASE_URL = "https://ssnezkzajkxkogieztxb.supabase.co";
+const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNzbmV6a3phamt4a29naWV6dHhiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ4MDY3NjgsImV4cCI6MjEwMDM4Mjc2OH0.XVxtHJDWZAfQ3DplLwPjPgUOVZwYvYfFAAM7PFxqnb8";
+
 const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 document.addEventListener("DOMContentLoaded", async () => {
@@ -32,7 +33,8 @@ async function loadCategories() {
     const { data, error } = await supabase.from('job_categories').select('*');
     const select = document.getElementById('category-select');
     if (error || !data) {
-        select.innerHTML = '<option>خطأ في التحميل</option>';
+        select.innerHTML = '<option>خطأ في تحميل القطاعات</option>';
+        console.error(error);
         return;
     }
     select.innerHTML = '<option value="">-- اختر القطاع --</option>';
@@ -49,7 +51,7 @@ async function loadJobs(categoryId) {
 
     const { data, error } = await supabase.from('jobs').select('*').eq('category_id', categoryId);
     if (error || !data) {
-        select.innerHTML = '<option>خطأ في التحميل</option>';
+        select.innerHTML = '<option>خطأ في تحميل المهن</option>';
         return;
     }
     select.innerHTML = '<option value="">-- اختر المهنة --</option>';
@@ -63,11 +65,12 @@ async function loadNeighborhoods() {
     const { data, error } = await supabase.from('neighborhoods').select('*');
     const select = document.getElementById('zone-select');
     if (error || !data) {
-        select.innerHTML = '<option>خطأ في التحميل</option>';
+        select.innerHTML = '<option>خطأ في تحميل الأحياء</option>';
+        console.error(error);
         return;
     }
     select.innerHTML = '<option value="">-- اختر الحي --</option>';
     data.forEach(item => {
         select.innerHTML += `<option value="${item.id}">${item.name} (${item.zone})</option>`;
     });
-}
+        }
