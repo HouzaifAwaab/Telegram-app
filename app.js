@@ -5,9 +5,31 @@ const SUPABASE_URL = "https://ssnezkzajkxkogieztxb.supabase.co";
 const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNzbmV6a3phamt4a29naWV6dHhiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ4MDY3NjgsImV4cCI6MjEwMDM4Mjc2OH0.XVxtHJDWZAfQ3DplLwPjPgUOVZwYvYfFAAM7PFxqnb8";
 const supabaseClient = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY) : null;
 
-// معرف المستخدم المحلي أو المجلوب من تليجرام
-const userId = tg && tg.initDataUnsafe && tg.initDataUnsafe.user ? tg.initDataUnsafe.user.id.toString() : (localStorage.getItem('user_id') || 'usr_' + Math.random().toString(36).substring(2, 9));
+// ----------------------------------------------------
+// منطق توليد وتثبيت كود المستخدم الفريد (User Code)
+// ----------------------------------------------------
+const telegramUser = tg && tg.initDataUnsafe ? tg.initDataUnsafe.user : null;
+const userId = telegramUser ? telegramUser.id.toString() : (localStorage.getItem('user_id') || 'usr_' + Math.random().toString(36).substring(2, 9));
 localStorage.setItem('user_id', userId);
+
+function generateUserUniqueCode() {
+    let savedCode = localStorage.getItem('my_user_code');
+    if (savedCode) return savedCode;
+
+    let code = "";
+    if (telegramUser) {
+        const prefix = (telegramUser.first_name || 'US').substring(0, 2).toUpperCase().replace(/[^A-Z]/g, 'TG');
+        const idDigits = telegramUser.id.toString().slice(-4);
+        code = `${prefix}${idDigits}`;
+    } else {
+        code = `GS${Math.floor(1000 + Math.random() * 9000)}`;
+    }
+    localStorage.setItem('my_user_code', code);
+    return code;
+}
+
+const userCode = generateUserUniqueCode();
+const publisherName = telegramUser ? `${telegramUser.first_name || ''} ${telegramUser.last_name || ''}`.trim() : "زائر المنصة";
 
 // المهن والتصنيفات
 const optionsData = {
@@ -279,6 +301,11 @@ function copyPhoneNum(phone) {
     alert(`تم نسخ رقم الهاتف (${phone}) بنجاح!`);
 }
 
+function copyAdCode(code) {
+    navigator.clipboard.writeText(`#${code}`);
+    alert(`تم نسخ كود الإعلان (#${code}) بنجاح!`);
+}
+
 function bindCascadingDropdowns(catId, subGroupId, subSelectId, detailGroupId, detailSelectId) {
     const catSelect = document.getElementById(catId);
     const subGroup = document.getElementById(subGroupId);
@@ -311,11 +338,14 @@ function bindCascadingDropdowns(catId, subGroupId, subSelectId, detailGroupId, d
     });
 }
 
+// ----------------------------------------------------
+// تحميل الإعلانات المطور مع دعم البحث بالأكواد
+// ----------------------------------------------------
 async function loadAds() {
     const resultsContainer = document.getElementById('results');
     resultsContainer.innerHTML = '<p class="placeholder-text">جاري جلب الإعلانات...</p>';
 
-    const liveQuery = document.getElementById('live-search-input').value.toLowerCase();
+    const liveQuery = document.getElementById('live-search-input').value.trim().toLowerCase();
     const neighborhood = document.getElementById('neighborhood-select').value;
     const blockNum = document.getElementById('block-num-input').value;
     const subType = document.getElementById('sub-type-select').value;
@@ -340,8 +370,13 @@ async function loadAds() {
     if (subType) filtered = filtered.filter(a => a.details && a.details.includes(subType));
     if (detail) filtered = filtered.filter(a => a.details && a.details.includes(detail));
 
+    // دعم البحث الذكي بالأكواد النصية والرقمية (#1001 أو كود المستخدم)
     if (liveQuery) {
+        const cleanQuery = liveQuery.replace('#', '');
         filtered = filtered.filter(a => 
+            (a.ad_code && a.ad_code.toString() === cleanQuery) ||
+            (a.user_code && a.user_code.toLowerCase().includes(cleanQuery)) ||
+            (a.publisher_name && a.publisher_name.toLowerCase().includes(cleanQuery)) ||
             (a.title && a.title.toLowerCase().includes(liveQuery)) || 
             (a.zone && a.zone.toLowerCase().includes(liveQuery)) || 
             (a.details && a.details.toLowerCase().includes(liveQuery))
@@ -351,7 +386,7 @@ async function loadAds() {
     filtered.sort((a, b) => (b.is_vip ? 2 : b.is_urgent ? 1 : 0) - (a.is_vip ? 2 : a.is_urgent ? 1 : 0));
 
     if (filtered.length === 0) {
-        resultsContainer.innerHTML = '<p class="placeholder-text">لا توجد إعلانات مطابقة.</p>';
+        resultsContainer.innerHTML = '<p class="placeholder-text">لا توجد إعلانات مطابقة لخيارات البحث.</p>';
         return;
     }
 
@@ -360,24 +395,36 @@ async function loadAds() {
         const typeBadge = ad.ad_type === 'offer' ? '<span class="badge offer-badge">🛠️ تقديم خدمة</span>' : '<span class="badge request-badge">🙋‍♂️ طلب خدمة</span>';
         const vipBadge = ad.is_vip ? '<span class="badge vip-badge">⭐ مُميّز ومُثبّت</span>' : '';
         const urgentBadge = ad.is_urgent ? '<span class="badge urgent-badge">🚨 عاجل جداً</span>' : '';
+        
+        const displayAdCode = ad.ad_code ? `#${ad.ad_code}` : '#---';
+        const displayUserCode = ad.user_code || 'N/A';
+        const displayPublisher = ad.publisher_name || 'ناشر زائر';
 
         resultsContainer.innerHTML += `
             <div class="ad-card ${ad.is_vip ? 'vip-card' : ''} ${ad.is_urgent ? 'urgent-card' : ''}">
                 <div class="card-header">
                     <h4>${ad.title}</h4>
-                    <div class="badges">${typeBadge} ${vipBadge} ${urgentBadge}</div>
+                    <span class="ad-code-badge">${displayAdCode}</span>
                 </div>
+                <div class="publisher-info">
+                    👤 الناشر: <strong>${displayPublisher}</strong> <span class="user-code-tag">[كود: ${displayUserCode}]</span>
+                </div>
+                <div class="badges">${typeBadge} ${vipBadge} ${urgentBadge}</div>
                 <span class="location-badge">📍 ${ad.zone}</span>
                 <p class="ad-text">${ad.details || 'لا توجد تفاصيل إضافية'}</p>
                 <div class="card-actions">
                     <a href="https://wa.me/249${ad.phone.replace(/^0/, '')}" target="_blank" class="contact-btn">💬 واتساب</a>
-                    <button onclick="copyPhoneNum('${ad.phone}')" class="btn-secondary">📞 نسخ الرقم (${ad.phone})</button>
+                    <button onclick="copyPhoneNum('${ad.phone}')" class="btn-secondary">📞 نسخ الرقم</button>
+                    ${ad.ad_code ? `<button onclick="copyAdCode('${ad.ad_code}')" class="btn-secondary">📋 نسخ كود الإعلان</button>` : ''}
                 </div>
             </div>
         `;
     });
 }
 
+// ----------------------------------------------------
+// حفظ الإعلان مع ربطه بكود وتاريخ المستخدم الثابت
+// ----------------------------------------------------
 async function saveAd() {
     const title = document.getElementById('tech-title').value;
     const neighborhood = document.getElementById('add-neighborhood-select').value;
@@ -407,14 +454,22 @@ async function saveAd() {
     const fullDetails = `[التصنيف: ${subType || ''} - ${detail || ''}]${extraText}\n${rawDetails}`;
 
     const { error } = await supabaseClient.from('job_ads').insert([{
-        title, zone: fullZone, phone, details: fullDetails,
-        ad_type: activeAddIntent, is_vip: isVIP, is_urgent: isUrgent, user_id: userId
+        title, 
+        zone: fullZone, 
+        phone, 
+        details: fullDetails,
+        ad_type: activeAddIntent, 
+        is_vip: isVIP, 
+        is_urgent: isUrgent, 
+        user_id: userId,
+        user_code: userCode,
+        publisher_name: publisherName
     }]);
 
     if (!error) {
         let count = parseInt(localStorage.getItem('posted_ads_count') || '0');
         localStorage.setItem('posted_ads_count', (count + 1).toString());
-        alert("تم نشر إعلانك بنجاح!");
+        alert("تم نشر إعلانك بنجاح وسيتولد له كود تلقائياً!");
         document.getElementById('nav-search').click();
         await loadAds();
     } else { alert("حدث خطأ أثناء النشر، حاول مرة أخرى."); }
@@ -435,7 +490,10 @@ async function loadMyAds() {
     data.forEach(ad => {
         container.innerHTML += `
             <div class="ad-card" style="background: #242f3d; color: #fff; border-right-color: #64b5f6;">
-                <h4 style="color: #64b5f6;">${ad.title}</h4>
+                <div class="card-header">
+                    <h4 style="color: #64b5f6;">${ad.title}</h4>
+                    <span class="ad-code-badge">#${ad.ad_code || '---'}</span>
+                </div>
                 <span class="location-badge" style="background: #17212b; color: #ccc;">📍 ${ad.zone}</span>
                 <p style="color: #ddd;">${ad.details}</p>
                 <button onclick="deleteAd('${ad.id}')" class="btn-danger" style="margin-top: 8px;">🗑️ حذف الإعلان</button>
@@ -452,24 +510,25 @@ async function deleteAd(adId) {
 }
 
 // ----------------------------------------------------
-// جلب وعرض بيانات الملف الشخصي تلقائياً من تليجرام
+// عرض بيانات الملف الشخصي والكود الثابت للمستخدم
 // ----------------------------------------------------
 function renderTelegramUserProfile() {
-    const user = tg && tg.initDataUnsafe ? tg.initDataUnsafe.user : null;
-
     const avatarImg = document.getElementById('user-avatar');
     const fullNameElem = document.getElementById('profile-full-name');
     const usernameElem = document.getElementById('profile-username');
     const userIdElem = document.getElementById('profile-user-id');
+    const userCodeElem = document.getElementById('profile-user-code');
 
-    if (user) {
-        const fullName = `${user.first_name || ''} ${user.last_name || ''}`.trim() || 'مستخدم تليجرام';
+    userCodeElem.innerText = userCode;
+
+    if (telegramUser) {
+        const fullName = `${telegramUser.first_name || ''} ${telegramUser.last_name || ''}`.trim() || 'مستخدم تليجرام';
         fullNameElem.innerText = fullName;
-        usernameElem.innerText = user.username ? `@${user.username}` : 'غير محدد';
-        userIdElem.innerText = user.id.toString();
+        usernameElem.innerText = telegramUser.username ? `@${telegramUser.username}` : 'غير محدد';
+        userIdElem.innerText = telegramUser.id.toString();
 
-        if (user.photo_url) {
-            avatarImg.src = user.photo_url;
+        if (telegramUser.photo_url) {
+            avatarImg.src = telegramUser.photo_url;
         } else {
             avatarImg.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(fullName)}&background=2b5278&color=fff`;
         }
