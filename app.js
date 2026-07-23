@@ -73,7 +73,7 @@ const optionsData = {
     }
 };
 
-// الهيكلة الجغرافية الكاملة
+// الهيكلة الجغرافية
 const zonesTree = {
     east: {
         label: "القطاع الشرقي",
@@ -107,8 +107,10 @@ function generateAirportSquares(start, end) {
 
 let activeSearchIntent = 'all';
 let activeAddIntent = 'offer';
+let vipOnlyFilter = false;
 
 document.addEventListener("DOMContentLoaded", async () => {
+    checkAndShowPromoBanner();
     setupNavigation();
     setupIntentTabs();
 
@@ -127,9 +129,120 @@ document.addEventListener("DOMContentLoaded", async () => {
     document.getElementById('search-btn').addEventListener('click', loadAds);
     document.getElementById('save-ad-btn').addEventListener('click', saveAd);
 
+    updateGozlaneeUI();
     await loadAds();
 });
 
+// ----------------------------------------------------
+// العرض الترويجي "جُذلاني" بالدارجي (يظهر كل 3 أيام)
+// ----------------------------------------------------
+function checkAndShowPromoBanner() {
+    const lastShown = localStorage.getItem('last_promo_shown_time');
+    const now = Date.now();
+    const threeDaysMs = 3 * 24 * 60 * 60 * 1000;
+
+    if (!lastShown || (now - parseInt(lastShown)) > threeDaysMs) {
+        document.getElementById('gozlanee-promo-banner').classList.remove('hidden');
+        localStorage.setItem('last_promo_shown_time', now.toString());
+    }
+}
+
+function closePromoBanner() {
+    document.getElementById('gozlanee-promo-banner').classList.add('hidden');
+}
+
+// ----------------------------------------------------
+// التنقل بين الأقسام
+// ----------------------------------------------------
+function setupNavigation() {
+    const btnSearch = document.getElementById('nav-search');
+    const btnVip = document.getElementById('nav-vip');
+    const btnAdd = document.getElementById('nav-add');
+    const btnGozlanee = document.getElementById('nav-gozlanee');
+    const btnProfile = document.getElementById('nav-profile');
+    
+    const secSearch = document.getElementById('search-section');
+    const secAdd = document.getElementById('add-section');
+    const secGozlanee = document.getElementById('gozlanee-section');
+    const secPortfolio = document.getElementById('portfolio-section');
+    const secProfile = document.getElementById('profile-section');
+    const resultsContainer = document.getElementById('results');
+
+    function hideAllSections() {
+        secSearch.classList.add('hidden');
+        secAdd.classList.add('hidden');
+        secGozlanee.classList.add('hidden');
+        secPortfolio.classList.add('hidden');
+        secProfile.classList.add('hidden');
+        resultsContainer.classList.add('hidden');
+    }
+
+    btnSearch.addEventListener('click', () => {
+        vipOnlyFilter = false;
+        setActiveTab(btnSearch, [btnVip, btnAdd, btnGozlanee, btnProfile]);
+        hideAllSections();
+        secSearch.classList.remove('hidden'); 
+        resultsContainer.classList.remove('hidden');
+        loadAds();
+    });
+
+    btnVip.addEventListener('click', () => {
+        vipOnlyFilter = true;
+        setActiveTab(btnVip, [btnSearch, btnAdd, btnGozlanee, btnProfile]);
+        hideAllSections();
+        secSearch.classList.remove('hidden'); 
+        resultsContainer.classList.remove('hidden');
+        loadAds();
+    });
+
+    btnAdd.addEventListener('click', () => {
+        setActiveTab(btnAdd, [btnSearch, btnVip, btnGozlanee, btnProfile]);
+        hideAllSections();
+        secAdd.classList.remove('hidden');
+    });
+
+    btnGozlanee.addEventListener('click', () => {
+        switchToGozlaneeSection();
+    });
+
+    btnProfile.addEventListener('click', async () => {
+        setActiveTab(btnProfile, [btnSearch, btnVip, btnAdd, btnGozlanee]);
+        hideAllSections();
+        secProfile.classList.remove('hidden');
+        renderTelegramUserProfile();
+        await loadMyAds();
+    });
+}
+
+function switchToGozlaneeSection() {
+    const allBtns = document.querySelectorAll('.nav-btn');
+    allBtns.forEach(b => b.classList.remove('active'));
+    document.getElementById('nav-gozlanee').classList.add('active');
+
+    document.getElementById('search-section').classList.add('hidden');
+    document.getElementById('add-section').classList.add('hidden');
+    document.getElementById('portfolio-section').classList.add('hidden');
+    document.getElementById('profile-section').classList.add('hidden');
+    document.getElementById('results').classList.add('hidden');
+    
+    document.getElementById('gozlanee-section').classList.remove('hidden');
+    updateGozlaneeUI();
+}
+
+function switchToPortfolioSection() {
+    document.getElementById('profile-section').classList.add('hidden');
+    document.getElementById('portfolio-section').classList.remove('hidden');
+    loadPortfolio();
+}
+
+function setActiveTab(active, inactives) {
+    active.classList.add('active');
+    inactives.forEach(i => i.classList.remove('active'));
+}
+
+// ----------------------------------------------------
+// دوال الهيكلة والربط للقوائم المنسدلة
+// ----------------------------------------------------
 function initCategoryOptions(selectId) {
     const select = document.getElementById(selectId);
     if (!select) return;
@@ -188,43 +301,6 @@ function initZoneDropdowns(mainId, subGroupId, subSelectId, neighGroupId, neighS
     });
 }
 
-function setupNavigation() {
-    const btnSearch = document.getElementById('nav-search');
-    const btnAdd = document.getElementById('nav-add');
-    const btnProfile = document.getElementById('nav-profile');
-    
-    const secSearch = document.getElementById('search-section');
-    const secAdd = document.getElementById('add-section');
-    const secProfile = document.getElementById('profile-section');
-    const resultsContainer = document.getElementById('results');
-
-    btnSearch.addEventListener('click', () => {
-        setActiveTab(btnSearch, [btnAdd, btnProfile]);
-        secSearch.classList.remove('hidden'); resultsContainer.classList.remove('hidden');
-        secAdd.classList.add('hidden'); secProfile.classList.add('hidden');
-    });
-
-    btnAdd.addEventListener('click', () => {
-        setActiveTab(btnAdd, [btnSearch, btnProfile]);
-        secAdd.classList.remove('hidden');
-        secSearch.classList.add('hidden'); secProfile.classList.add('hidden'); resultsContainer.classList.add('hidden');
-    });
-
-    btnProfile.addEventListener('click', async () => {
-        setActiveTab(btnProfile, [btnSearch, btnAdd]);
-        secProfile.classList.remove('hidden');
-        secSearch.classList.add('hidden'); secAdd.classList.add('hidden'); resultsContainer.classList.add('hidden');
-        
-        renderTelegramUserProfile();
-        await loadMyAds();
-    });
-}
-
-function setActiveTab(active, inactives) {
-    active.classList.add('active');
-    inactives.forEach(i => i.classList.remove('active'));
-}
-
 function setupIntentTabs() {
     const filterAll = document.getElementById('filter-all');
     const filterOffers = document.getElementById('filter-offers');
@@ -263,49 +339,6 @@ function setFilterIntent(intent, activeBtn, inactiveBtns) {
     loadAds();
 }
 
-function setupPromos() {
-    const urgentCheck = document.getElementById('urgent-ad-check');
-    const urgentPayBox = document.getElementById('urgent-payment-info');
-    const userAdCount = parseInt(localStorage.getItem('posted_ads_count') || '0');
-
-    if (urgentCheck) {
-        urgentCheck.addEventListener('change', (e) => {
-            if (e.target.checked && userAdCount > 0) {
-                urgentPayBox.classList.remove('hidden');
-            } else { urgentPayBox.classList.add('hidden'); }
-        });
-    }
-
-    const vipCheck = document.getElementById('vip-ad-check');
-    const vipPayBox = document.getElementById('vip-payment-info');
-    const waBtn = document.getElementById('whatsapp-receipt-btn');
-
-    if (vipCheck) {
-        vipCheck.addEventListener('change', (e) => {
-            if (e.target.checked) {
-                vipPayBox.classList.remove('hidden');
-                const title = document.getElementById('tech-title').value;
-                waBtn.href = `https://wa.me/249907627406?text=${encodeURIComponent("مرحباً حذيفة، قمت بتحويل مبلغ الإعلان المميز للإعلان: " + title)}`;
-            } else { vipPayBox.classList.add('hidden'); }
-        });
-    }
-}
-
-function copyAccountNum() {
-    navigator.clipboard.writeText("4633063");
-    alert("تم نسخ رقم الحساب (4633063) بنجاح!");
-}
-
-function copyPhoneNum(phone) {
-    navigator.clipboard.writeText(phone);
-    alert(`تم نسخ رقم الهاتف (${phone}) بنجاح!`);
-}
-
-function copyAdCode(code) {
-    navigator.clipboard.writeText(`#${code}`);
-    alert(`تم نسخ كود الإعلان (#${code}) بنجاح!`);
-}
-
 function bindCascadingDropdowns(catId, subGroupId, subSelectId, detailGroupId, detailSelectId) {
     const catSelect = document.getElementById(catId);
     const subGroup = document.getElementById(subGroupId);
@@ -338,8 +371,36 @@ function bindCascadingDropdowns(catId, subGroupId, subSelectId, detailGroupId, d
     });
 }
 
+function setupPromos() {
+    const urgentCheck = document.getElementById('urgent-ad-check');
+    const urgentPayBox = document.getElementById('urgent-payment-info');
+    const userAdCount = parseInt(localStorage.getItem('posted_ads_count') || '0');
+
+    if (urgentCheck) {
+        urgentCheck.addEventListener('change', (e) => {
+            if (e.target.checked && userAdCount > 0) {
+                urgentPayBox.classList.remove('hidden');
+            } else { urgentPayBox.classList.add('hidden'); }
+        });
+    }
+
+    const vipCheck = document.getElementById('vip-ad-check');
+    const vipPayBox = document.getElementById('vip-payment-info');
+    const waBtn = document.getElementById('whatsapp-receipt-btn');
+
+    if (vipCheck) {
+        vipCheck.addEventListener('change', (e) => {
+            if (e.target.checked) {
+                vipPayBox.classList.remove('hidden');
+                const title = document.getElementById('tech-title').value;
+                waBtn.href = `https://wa.me/249907627406?text=${encodeURIComponent("مرحباً حذيفة، قمت بتحويل مبلغ الإعلان المميز للإعلان: " + title)}`;
+            } else { vipPayBox.classList.add('hidden'); }
+        });
+    }
+}
+
 // ----------------------------------------------------
-// تحميل الإعلانات المطور مع دعم البحث بالأكواد
+// تحميل الإعلانات المطور مع دعومات جُذلاني والأولوية
 // ----------------------------------------------------
 async function loadAds() {
     const resultsContainer = document.getElementById('results');
@@ -361,6 +422,10 @@ async function loadAds() {
 
     let filtered = data;
 
+    if (vipOnlyFilter) {
+        filtered = filtered.filter(a => a.is_vip);
+    }
+
     if (activeSearchIntent !== 'all') {
         filtered = filtered.filter(a => a.ad_type === activeSearchIntent);
     }
@@ -370,7 +435,6 @@ async function loadAds() {
     if (subType) filtered = filtered.filter(a => a.details && a.details.includes(subType));
     if (detail) filtered = filtered.filter(a => a.details && a.details.includes(detail));
 
-    // دعم البحث الذكي بالأكواد النصية والرقمية (#1001 أو كود المستخدم)
     if (liveQuery) {
         const cleanQuery = liveQuery.replace('#', '');
         filtered = filtered.filter(a => 
@@ -383,7 +447,12 @@ async function loadAds() {
         );
     }
 
-    filtered.sort((a, b) => (b.is_vip ? 2 : b.is_urgent ? 1 : 0) - (a.is_vip ? 2 : a.is_urgent ? 1 : 0));
+    // ترتيب الأولوية: VIP أولاً، ثم قبول جُذلاني، ثم العاجل
+    filtered.sort((a, b) => {
+        const scoreA = (a.is_vip ? 100 : 0) + (a.accepts_gozlanee ? 50 : 0) + (a.is_urgent ? 20 : 0);
+        const scoreB = (b.is_vip ? 100 : 0) + (b.accepts_gozlanee ? 50 : 0) + (b.is_urgent ? 20 : 0);
+        return scoreB - scoreA;
+    });
 
     if (filtered.length === 0) {
         resultsContainer.innerHTML = '<p class="placeholder-text">لا توجد إعلانات مطابقة لخيارات البحث.</p>';
@@ -395,7 +464,8 @@ async function loadAds() {
         const typeBadge = ad.ad_type === 'offer' ? '<span class="badge offer-badge">🛠️ تقديم خدمة</span>' : '<span class="badge request-badge">🙋‍♂️ طلب خدمة</span>';
         const vipBadge = ad.is_vip ? '<span class="badge vip-badge">⭐ مُميّز ومُثبّت</span>' : '';
         const urgentBadge = ad.is_urgent ? '<span class="badge urgent-badge">🚨 عاجل جداً</span>' : '';
-        
+        const gozlaneeBadge = ad.accepts_gozlanee ? '<span class="badge gozlanee-badge">💳 يقبل الدفع عبر جُذلاني</span>' : '';
+
         const displayAdCode = ad.ad_code ? `#${ad.ad_code}` : '#---';
         const displayUserCode = ad.user_code || 'N/A';
         const displayPublisher = ad.publisher_name || 'ناشر زائر';
@@ -409,7 +479,7 @@ async function loadAds() {
                 <div class="publisher-info">
                     👤 الناشر: <strong>${displayPublisher}</strong> <span class="user-code-tag">[كود: ${displayUserCode}]</span>
                 </div>
-                <div class="badges">${typeBadge} ${vipBadge} ${urgentBadge}</div>
+                <div class="badges">${typeBadge} ${vipBadge} ${urgentBadge} ${gozlaneeBadge}</div>
                 <span class="location-badge">📍 ${ad.zone}</span>
                 <p class="ad-text">${ad.details || 'لا توجد تفاصيل إضافية'}</p>
                 <div class="card-actions">
@@ -423,7 +493,7 @@ async function loadAds() {
 }
 
 // ----------------------------------------------------
-// حفظ الإعلان مع ربطه بكود وتاريخ المستخدم الثابت
+// نشر وحفظ إعلان مع خاصية "مقبول عبر جُذلاني"
 // ----------------------------------------------------
 async function saveAd() {
     const title = document.getElementById('tech-title').value;
@@ -434,6 +504,7 @@ async function saveAd() {
     const detail = document.getElementById('add-detail-select').value;
     const rawDetails = document.getElementById('tech-details').value;
 
+    const acceptsGozlanee = document.getElementById('accept-gozlanee-check').checked;
     const isUrgent = document.getElementById('urgent-ad-check').checked;
     const isVIP = document.getElementById('vip-ad-check').checked;
 
@@ -461,6 +532,7 @@ async function saveAd() {
         ad_type: activeAddIntent, 
         is_vip: isVIP, 
         is_urgent: isUrgent, 
+        accepts_gozlanee: acceptsGozlanee,
         user_id: userId,
         user_code: userCode,
         publisher_name: publisherName
@@ -473,6 +545,238 @@ async function saveAd() {
         document.getElementById('nav-search').click();
         await loadAds();
     } else { alert("حدث خطأ أثناء النشر، حاول مرة أخرى."); }
+}
+
+// ----------------------------------------------------
+// نظام إدارة محفظة "جُذلاني" (Gozlanee Smart Escrow)
+// ----------------------------------------------------
+function updateGozlaneeUI() {
+    const available = parseFloat(localStorage.getItem('gz_bal_available') || '0.00');
+    const frozen = parseFloat(localStorage.getItem('gz_bal_frozen') || '0.00');
+
+    document.getElementById('gz-available-bal').innerText = `${available.toFixed(2)} ج.س`;
+    document.getElementById('gz-frozen-bal').innerText = `${frozen.toFixed(2)} ج.س`;
+    document.getElementById('gz-deposit-code-ref').innerText = userCode;
+
+    renderGozlaneeStatement();
+}
+
+function toggleGozlaneeSubTab(tabName) {
+    document.getElementById('gz-topup-form').classList.add('hidden');
+    document.getElementById('gz-pay-form').classList.add('hidden');
+    document.getElementById('gz-transfer-form').classList.add('hidden');
+
+    if (tabName === 'topup') document.getElementById('gz-topup-form').classList.remove('hidden');
+    if (tabName === 'pay') document.getElementById('gz-pay-form').classList.remove('hidden');
+    if (tabName === 'transfer') document.getElementById('gz-transfer-form').classList.remove('hidden');
+}
+
+function addGozlaneeStatement(type, amount, title, ref = "") {
+    let statement = JSON.parse(localStorage.getItem('gz_statements') || '[]');
+    statement.unshift({
+        id: 'TX' + Math.floor(Math.random()*89999 + 10000),
+        type, 
+        amount, 
+        title, 
+        ref,
+        date: new Date().toLocaleTimeString('ar-SD', {hour: '2-digit', minute:'2-digit'})
+    });
+    localStorage.setItem('gz_statements', JSON.stringify(statement));
+    renderGozlaneeStatement();
+}
+
+function renderGozlaneeStatement() {
+    const container = document.getElementById('gz-statement-list');
+    let statement = JSON.parse(localStorage.getItem('gz_statements') || '[]');
+
+    if (statement.length === 0) {
+        container.innerHTML = '<p class="placeholder-text">لا توجد عمليات مسجلة حديثاً.</p>';
+        return;
+    }
+
+    container.innerHTML = '';
+    statement.forEach(st => {
+        let typeClass = st.type === 'topup' ? 'st-type-topup' : st.type === 'frozen' ? 'st-type-frozen' : 'st-type-trans';
+        let icon = st.type === 'topup' ? '🟢' : st.type === 'frozen' ? '🔒' : '🔴';
+        
+        container.innerHTML += `
+            <div class="st-item ${typeClass}">
+                <div>
+                    <div>${icon} <strong>${st.title}</strong></div>
+                    <span style="font-size: 10px; color: #a0aec0;">${st.date} | ${st.ref ? 'مرجع: ' + st.ref : ''}</span>
+                </div>
+                <div style="font-weight: bold; color: ${st.type==='topup'?'#2ecc71':'#e74c3c'}">
+                    ${st.type==='topup'?'+':'-'}${st.amount} ج.س
+                </div>
+            </div>
+        `;
+    });
+}
+
+function submitBankakDeposit() {
+    const amount = parseFloat(document.getElementById('gz-topup-amount').value);
+    const ref = document.getElementById('gz-topup-ref').value;
+
+    if (!amount || amount <= 0 || !ref) {
+        alert("الرجاء أدخل قيمة المبلغ ورقم عملية الإشعار بشكل صحيح!");
+        return;
+    }
+
+    const waText = encodeURIComponent(`طلب تغذية جُذلاني 💳\nالكود: ${userCode}\nالمبلغ: ${amount} جنيه\nرقم العملية: ${ref}`);
+    window.open(`https://wa.me/249907627406?text=${waText}`, '_blank');
+
+    addGozlaneeStatement('topup', amount, "طلب تغذية قيد المراجعة الإدارية", ref);
+    alert("تم إرسال الإشعار للإدارة، سيتم توثيق الرصيد في محفظتك فور التأكيد!");
+    document.getElementById('gz-topup-amount').value = '';
+    document.getElementById('gz-topup-ref').value = '';
+}
+
+function processEscrowFreeze() {
+    const providerCode = document.getElementById('gz-provider-code').value.trim();
+    const amount = parseFloat(document.getElementById('gz-escrow-amount').value);
+    const desc = document.getElementById('gz-escrow-desc').value.trim();
+
+    let available = parseFloat(localStorage.getItem('gz_bal_available') || '0.00');
+
+    if (!providerCode || !amount || amount <= 0) {
+        alert("يرجى التأكد من كود الفني والمبلغ المطلوب تجميده!");
+        return;
+    }
+
+    if (available < amount) {
+        alert("رصيدك المتاح في جُذلاني غير كافٍ. قم بتغذية المحفظة أولاً!");
+        return;
+    }
+
+    let frozen = parseFloat(localStorage.getItem('gz_bal_frozen') || '0.00');
+    localStorage.setItem('gz_bal_available', (available - amount).toString());
+    localStorage.setItem('gz_bal_frozen', (frozen + amount).toString());
+
+    addGozlaneeStatement('frozen', amount, `تجميد لخدمة الفني (${providerCode})`, desc);
+    updateGozlaneeUI();
+
+    alert(`تم تجميد مبلغ (${amount} جنيه) بنجاح وإمهال الفني 60 دقيقة للموافقة وتنفيذ الخدمة!`);
+
+    // إعداد مؤقت 60 دقيقة لإلغاء التجميد تلقائياً إذا لم يُنفذ
+    setTimeout(() => {
+        let currentFrozen = parseFloat(localStorage.getItem('gz_bal_frozen') || '0.00');
+        if (currentFrozen >= amount) {
+            let currentAvail = parseFloat(localStorage.getItem('gz_bal_available') || '0.00');
+            localStorage.setItem('gz_bal_frozen', (currentFrozen - amount).toString());
+            localStorage.setItem('gz_bal_available', (currentAvail + amount).toString());
+            addGozlaneeStatement('topup', amount, `فك تجميد آلي (انقضاء المهلة 60د)`, providerCode);
+            updateGozlaneeUI();
+        }
+    }, 60 * 60 * 1000);
+}
+
+function processDirectTransfer() {
+    const targetCode = document.getElementById('gz-target-code').value.trim();
+    const amount = parseFloat(document.getElementById('gz-transfer-amount').value);
+
+    let available = parseFloat(localStorage.getItem('gz_bal_available') || '0.00');
+
+    if (!targetCode || !amount || amount <= 0) {
+        alert("يرجى إدخال كود المستلم والمبلغ بصورة صحيحة!");
+        return;
+    }
+
+    if (available < amount) {
+        alert("رصيدك المتاح لا يكفي لإجراء هذا التحويل المباشر!");
+        return;
+    }
+
+    localStorage.setItem('gz_bal_available', (available - amount).toString());
+    addGozlaneeStatement('trans', amount, `تحويل مباشر للمستخدم (${targetCode})`);
+    updateGozlaneeUI();
+
+    alert(`تم تحويل مبلغ (${amount} جنيه) بنجاح للحساب كود (${targetCode})!`);
+}
+
+// ----------------------------------------------------
+// سابقة ومعرض الأعمال (Portfolio Before/After)
+// ----------------------------------------------------
+function loadPortfolio() {
+    const grid = document.getElementById('portfolio-grid');
+    let items = JSON.parse(localStorage.getItem('pf_items') || '[]');
+
+    if (items.length === 0) {
+        grid.innerHTML = '<p class="placeholder-text">لم تقم بإضافة أعمال بالمعرض بعد.</p>';
+        return;
+    }
+
+    grid.innerHTML = '';
+    items.forEach(item => {
+        grid.innerHTML += `
+            <div class="pf-item">
+                <div class="pf-title">${item.title}</div>
+                <div class="pf-images-comparison">
+                    <div class="pf-img-box">
+                        <img src="${item.before}" alt="قبل">
+                        <div class="pf-img-lbl">🔴 قبل الصيانة</div>
+                    </div>
+                    <div class="pf-img-box">
+                        <img src="${item.after}" alt="بعد">
+                        <div class="pf-img-lbl">🟢 بعد التسليم</div>
+                    </div>
+                </div>
+            </div>
+        `;
+    });
+}
+
+function addPortfolioItem() {
+    const title = document.getElementById('pf-title').value;
+    const before = document.getElementById('pf-before-img').value || 'https://via.placeholder.com/150?text=Before';
+    const after = document.getElementById('pf-after-img').value || 'https://via.placeholder.com/150?text=After';
+
+    if (!title) {
+        alert("يرجى إدخال عنوان للعمل!");
+        return;
+    }
+
+    let items = JSON.parse(localStorage.getItem('pf_items') || '[]');
+    items.unshift({ title, before, after });
+    localStorage.setItem('pf_items', JSON.stringify(items));
+
+    alert("تمت إضافة سابقة العمل بمعرضك بنجاح!");
+    document.getElementById('pf-title').value = '';
+    loadPortfolio();
+}
+
+// ----------------------------------------------------
+// عرض بيانات الملف الشخصي والمنصات الاجتماعية الثلاث
+// ----------------------------------------------------
+function renderTelegramUserProfile() {
+    const avatarImg = document.getElementById('user-avatar');
+    const fullNameElem = document.getElementById('profile-full-name');
+    const userCodeElem = document.getElementById('profile-user-code');
+
+    userCodeElem.innerText = userCode;
+
+    document.getElementById('profile-whatsapp').value = localStorage.getItem('social_whatsapp') || '';
+    document.getElementById('profile-facebook').value = localStorage.getItem('social_facebook') || '';
+    document.getElementById('profile-tiktok').value = localStorage.getItem('social_tiktok') || '';
+
+    if (telegramUser) {
+        const fullName = `${telegramUser.first_name || ''} ${telegramUser.last_name || ''}`.trim() || 'مستخدم تليجرام';
+        fullNameElem.innerText = fullName;
+
+        if (telegramUser.photo_url) {
+            avatarImg.src = telegramUser.photo_url;
+        } else {
+            avatarImg.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(fullName)}&background=2b5278&color=fff`;
+        }
+    } else {
+        fullNameElem.innerText = "مستخدم زائر";
+        avatarImg.src = "https://via.placeholder.com/100?text=Guest";
+    }
+}
+
+function saveSocialLinks() {
+    localStorage.setItem('social_whatsapp', document.getElementById('profile-whatsapp').value);
+    localStorage.setItem('social_facebook', document.getElementById('profile-facebook').value);
+    localStorage.setItem('social_tiktok', document.getElementById('profile-tiktok').value);
 }
 
 async function loadMyAds() {
@@ -509,42 +813,21 @@ async function deleteAd(adId) {
     }
 }
 
-// ----------------------------------------------------
-// عرض بيانات الملف الشخصي والكود الثابت للمستخدم
-// ----------------------------------------------------
-function renderTelegramUserProfile() {
-    const avatarImg = document.getElementById('user-avatar');
-    const fullNameElem = document.getElementById('profile-full-name');
-    const usernameElem = document.getElementById('profile-username');
-    const userIdElem = document.getElementById('profile-user-id');
-    const userCodeElem = document.getElementById('profile-user-code');
+function copyAccountNum() {
+    navigator.clipboard.writeText("4633063");
+    alert("تم نسخ رقم الحساب (4633063) بنجاح!");
+}
 
-    userCodeElem.innerText = userCode;
+function copyPhoneNum(phone) {
+    navigator.clipboard.writeText(phone);
+    alert(`تم نسخ رقم الهاتف (${phone}) بنجاح!`);
+}
 
-    if (telegramUser) {
-        const fullName = `${telegramUser.first_name || ''} ${telegramUser.last_name || ''}`.trim() || 'مستخدم تليجرام';
-        fullNameElem.innerText = fullName;
-        usernameElem.innerText = telegramUser.username ? `@${telegramUser.username}` : 'غير محدد';
-        userIdElem.innerText = telegramUser.id.toString();
-
-        if (telegramUser.photo_url) {
-            avatarImg.src = telegramUser.photo_url;
-        } else {
-            avatarImg.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(fullName)}&background=2b5278&color=fff`;
-        }
-    } else {
-        fullNameElem.innerText = "مستخدم زائر";
-        usernameElem.innerText = "@Guest";
-        userIdElem.innerText = userId;
-        avatarImg.src = "https://via.placeholder.com/100?text=Guest";
-    }
+function copyAdCode(code) {
+    navigator.clipboard.writeText(`#${code}`);
+    alert(`تم نسخ كود الإعلان (#${code}) بنجاح!`);
 }
 
 function openVerificationInfo() {
     alert("لطلب شارة التوثيق الزرقاء 🔵، يرجى التواصل مع إدارة المنصة وتحويل الإثباتات اللازمة.");
-}
-
-function refreshProfileData() {
-    renderTelegramUserProfile();
-    loadMyAds();
 }
