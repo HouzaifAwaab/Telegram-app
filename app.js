@@ -9,30 +9,38 @@ if (tg) {
 const SUPABASE_URL = "https://ssnezkzajkxkogieztxb.supabase.co";
 const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNzbmV6a3phamt4a29naWV6dHhiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ4MDY3NjgsImV4cCI6MjEwMDM4Mjc2OH0.XVxtHJDWZAfQ3DplLwPjPgUOVZwYvYfFAAM7PFxqnb8";
 
-const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+// التهيئة المباشرة الآمنة للمكتبة
+const supabaseClient = (window.supabase && window.supabase.createClient) 
+    ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY)
+    : supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 document.addEventListener("DOMContentLoaded", async () => {
     await loadCategories();
     await loadNeighborhoods();
 
     // التفاعل عند تغيير القطاع
-    document.getElementById('category-select').addEventListener('change', async (e) => {
-        const categoryId = e.target.value;
-        if (categoryId) {
-            await loadJobs(categoryId);
-        } else {
-            const jobSelect = document.getElementById('job-select');
-            jobSelect.innerHTML = '<option value="">اختر القطاع أولاً</option>';
-            jobSelect.disabled = true;
-        }
-    });
+    const categorySelect = document.getElementById('category-select');
+    if (categorySelect) {
+        categorySelect.addEventListener('change', async (e) => {
+            const categoryId = e.target.value;
+            if (categoryId) {
+                await loadJobs(categoryId);
+            } else {
+                const jobSelect = document.getElementById('job-select');
+                if (jobSelect) {
+                    jobSelect.innerHTML = '<option value="">اختر القطاع أولاً</option>';
+                    jobSelect.disabled = true;
+                }
+            }
+        });
+    }
 });
 
 // 1. تحميل القطاعات
 async function loadCategories() {
     const select = document.getElementById('category-select');
     try {
-        const { data, error } = await supabase.from('job_categories').select('*');
+        const { data, error } = await supabaseClient.from('job_categories').select('*');
         if (error || !data || data.length === 0) {
             select.innerHTML = '<option>لا توجد قطاعات مفعّلة</option>';
             console.error("Supabase Error:", error);
@@ -43,6 +51,7 @@ async function loadCategories() {
             select.innerHTML += `<option value="${item.id}">${item.name}</option>`;
         });
     } catch (err) {
+        console.error(err);
         select.innerHTML = '<option>حدث خطأ في الاتصال</option>';
     }
 }
@@ -50,25 +59,32 @@ async function loadCategories() {
 // 2. تحميل المهن بناءً على القطاع
 async function loadJobs(categoryId) {
     const select = document.getElementById('job-select');
+    if (!select) return;
+    
     select.disabled = false;
     select.innerHTML = '<option value="">جاري التحميل...</option>';
 
-    const { data, error } = await supabase.from('jobs').select('*').eq('category_id', categoryId);
-    if (error || !data || data.length === 0) {
-        select.innerHTML = '<option>لا توجد مهن في هذا القطاع</option>';
-        return;
+    try {
+        const { data, error } = await supabaseClient.from('jobs').select('*').eq('category_id', categoryId);
+        if (error || !data || data.length === 0) {
+            select.innerHTML = '<option>لا توجد مهن في هذا القطاع</option>';
+            return;
+        }
+        select.innerHTML = '<option value="">-- اختر المهنة --</option>';
+        data.forEach(item => {
+            select.innerHTML += `<option value="${item.id}">${item.title}</option>`;
+        });
+    } catch (err) {
+        console.error(err);
+        select.innerHTML = '<option>خطأ في تحميل المهن</option>';
     }
-    select.innerHTML = '<option value="">-- اختر المهنة --</option>';
-    data.forEach(item => {
-        select.innerHTML += `<option value="${item.id}">${item.title}</option>`;
-    });
 }
 
 // 3. تحميل الأحياء
 async function loadNeighborhoods() {
     const select = document.getElementById('zone-select');
     try {
-        const { data, error } = await supabase.from('neighborhoods').select('*');
+        const { data, error } = await supabaseClient.from('neighborhoods').select('*');
         if (error || !data || data.length === 0) {
             select.innerHTML = '<option>لا توجد أحياء مفعّلة</option>';
             console.error("Supabase Error:", error);
@@ -79,6 +95,7 @@ async function loadNeighborhoods() {
             select.innerHTML += `<option value="${item.id}">${item.name} (${item.zone})</option>`;
         });
     } catch (err) {
+        console.error(err);
         select.innerHTML = '<option>حدث خطأ في الاتصال</option>';
     }
-               }
+}
