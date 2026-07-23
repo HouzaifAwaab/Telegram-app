@@ -6,7 +6,7 @@
     <title>دليل خدمات بورتسودان</title>
     <!-- مكتبة تليجرام للتطبيقات المصغرة -->
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <!-- مكتبة Supabase لاتصال قاعدة البيانات -->
+    <!-- مكتبة Supabase -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link rel="stylesheet" href="style.css">
 </head>
@@ -19,19 +19,18 @@
 
     <main class="container">
         
-        <!-- فلتر البحث -->
-        <div class="filter-card">
+        <!-- أزرار التنقل -->
+        <div class="nav-buttons">
+            <button id="nav-search" class="nav-btn active">🔍 البحث عن خدمة</button>
+            <button id="nav-add" class="nav-btn">➕ إضافة إعلان فني</button>
+        </div>
+
+        <!-- 1. قسم البحث -->
+        <div id="search-section" class="card-box">
             <div class="form-group">
                 <label for="category-select">القطاع / المجال:</label>
                 <select id="category-select">
                     <option value="">جاري تحميل القطاعات...</option>
-                </select>
-            </div>
-
-            <div class="form-group">
-                <label for="job-select">المهنة المحددة:</label>
-                <select id="job-select" disabled>
-                    <option value="">اختر القطاع أولاً</option>
                 </select>
             </div>
 
@@ -42,12 +41,36 @@
                 </select>
             </div>
 
-            <button id="search-btn" class="btn">🔍 بحث عن فني</button>
+            <button id="search-btn" class="btn">🔍 عرض الفنيين المتاحين</button>
         </div>
 
-        <!-- عرض النتائج -->
+        <!-- 2. قسم إضافة إعلان جديد -->
+        <div id="add-section" class="card-box hidden">
+            <h3>تسجيل إعلان فني جديد</h3>
+            <div class="form-group">
+                <label>اسم الفني / المهنة:</label>
+                <input type="text" id="tech-title" placeholder="مثال: فني كهرباء منازل">
+            </div>
+            <div class="form-group">
+                <label>المنطقة / الحي:</label>
+                <select id="add-zone-select">
+                    <option value="">جاري تحميل الأحياء...</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>رقم الهاتف / الواتساب:</label>
+                <input type="tel" id="tech-phone" placeholder="0912345678">
+            </div>
+            <div class="form-group">
+                <label>تفاصيل الخدمة والخبرة:</label>
+                <textarea id="tech-details" placeholder="اكتب الخبرة والخدمات المقدمة..."></textarea>
+            </div>
+            <button id="save-ad-btn" class="btn btn-success">✅ نشر الإعلان فوراً</button>
+        </div>
+
+        <!-- عرض كروت النتائج -->
         <div id="results" class="results-container">
-            <p class="placeholder-text">حدد خيارات البحث واضغط على زر البحث للوصول للفنيين.</p>
+            <p class="placeholder-text">جاري جلب الإعلانات المتاحة...</p>
         </div>
 
     </main>
